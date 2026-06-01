@@ -158,7 +158,7 @@ export class NotificationService {
     
     this.notify({
       type: 'welcome',
-      title: `Welcome to CampusMart, ${userName}!`,
+      title: `Welcome to Mimshach, ${userName}!`,
       message: `Start with ${product.name} - your campus marketplace for everything!`,
       productImage: product.image,
       productName: product.name,

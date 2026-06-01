@@ -5,12 +5,12 @@ const TWO_HOURS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
 const getNextResetTime = () => {
   const now = Date.now();
-  const lastReset = localStorage.getItem('campusmart_timer_reset');
+  const lastReset = localStorage.getItem('Mimshach_timer_reset');
   
   if (!lastReset) {
     // First time - set reset time to 2 hours from now
     const resetTime = now + TWO_HOURS;
-    localStorage.setItem('campusmart_timer_reset', resetTime.toString());
+    localStorage.setItem('Mimshach_timer_reset', resetTime.toString());
     return resetTime;
   }
   
@@ -19,7 +19,7 @@ const getNextResetTime = () => {
   // If reset time has passed, set new reset time
   if (now >= resetTime) {
     const newResetTime = now + TWO_HOURS;
-    localStorage.setItem('campusmart_timer_reset', newResetTime.toString());
+    localStorage.setItem('Mimshach_timer_reset', newResetTime.toString());
     return newResetTime;
   }
   

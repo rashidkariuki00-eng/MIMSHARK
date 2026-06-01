@@ -82,7 +82,7 @@ const AuthDebug = () => {
           <button
             onClick={() => {
               sessionStorage.setItem('isAdmin', 'true');
-              sessionStorage.setItem('adminEmail', 'campusmart.care@gmail.com');
+              sessionStorage.setItem('adminEmail', 'Mimshach.care@gmail.com');
               window.location.reload();
             }}
             className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"

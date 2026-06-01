@@ -1,13 +1,13 @@
-import { Home, ShoppingBag, UtensilsCrossed, Building2, UserCircle2 } from "lucide-react";
+import { LayoutGrid, Home, ChefHat, Shirt, ShoppingCart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useShop } from "@/store/shop";
 
 const tabs = [
-  { to: "/", label: "Home", icon: Home, end: true },
-  { to: "/category/electronics", label: "Market", icon: ShoppingBag },
-  { to: "/category/food", label: "Food", icon: UtensilsCrossed },
-  { to: "/category/hostels", label: "Houses", icon: Building2 },
-  { to: "/profile", label: "Profile", icon: UserCircle2 },
+  { to: "/", label: "Shop", icon: LayoutGrid, end: true },
+  { to: "/search", label: "General", icon: Home },
+  { to: "/category/kitchen", label: "Kitchen", icon: ChefHat },
+  { to: "/category/outfits", label: "Outfits", icon: Shirt },
+  { to: "/cart", label: "Cart", icon: ShoppingCart },
 ];
 
 export const BottomNav = () => {

@@ -21,12 +21,12 @@ export const SignInModal = ({ isOpen, onClose, message }: SignInModalProps) => {
   // Prevent closing by clicking backdrop or X button for product/checkout pages
   const handleBackdropClick = (e: React.MouseEvent) => {
     // Only allow closing on homepage
-    if (message?.includes("Welcome to CampusMart")) {
+    if (message?.includes("Welcome to Mimshach")) {
       onClose();
     }
   };
 
-  const showCloseButton = message?.includes("Welcome to CampusMart");
+  const showCloseButton = message?.includes("Welcome to Mimshach");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">

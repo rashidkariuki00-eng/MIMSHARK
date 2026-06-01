@@ -6,18 +6,16 @@ import { adminGet, adminPut, adminDelete } from "@/utils/adminApi";
 interface Product {
   id: string;
   title: string;
-  seller_name: string;
-  seller_email: string;
   category: string;
   price: number;
   original_price?: number;
   image_url?: string;
   images?: string;
-  quantity_available: number;
-  location?: string;
+  stock_quantity: number;
   rating: number;
   reviews_count: number;
   is_available: boolean;
+  is_featured: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -108,8 +106,8 @@ const AdminProducts = () => {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.seller_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || 
+                         product.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterStatus === 'all' ||
                          (filterStatus === 'approved' && product.is_available) ||
                          (filterStatus === 'rejected' && !product.is_available);
     return matchesSearch && matchesFilter;
@@ -227,8 +225,7 @@ const AdminProducts = () => {
                 <div className="flex items-start justify-between mb-2 md:mb-3">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-foreground mb-1 text-sm md:text-base line-clamp-2">{product.title}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground truncate">by {product.seller_name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{product.seller_email}</p>
+                    <p className="text-xs md:text-sm text-muted-foreground truncate capitalize">{product.category}</p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ml-2 ${getStatusColor(product.is_available)}`}>
                     {getStatusText(product.is_available)}
@@ -249,7 +246,7 @@ const AdminProducts = () => {
                   <span>{new Date(product.created_at).toLocaleDateString()}</span>
                   <span className="flex items-center gap-1">
                     <Eye className="h-3 w-3" />
-                    Qty: {product.quantity_available}
+                    Qty: {product.stock_quantity}
                   </span>
                 </div>
                 <div className="flex gap-2">

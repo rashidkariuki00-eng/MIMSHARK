@@ -45,7 +45,7 @@ export const OfferNotifications = () => {
 
   useEffect(() => {
     // Check notification settings
-    const settings = localStorage.getItem('campusmart_settings');
+    const settings = localStorage.getItem('Mimshach_settings');
     let notificationsEnabled = true;
     
     if (settings) {
@@ -62,7 +62,7 @@ export const OfferNotifications = () => {
     }
 
     // Check if user just logged in or if notifications should show
-    const lastNotificationTime = localStorage.getItem('campusmart_last_notification');
+    const lastNotificationTime = localStorage.getItem('Mimshach_last_notification');
     const now = Date.now();
     const twoHours = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
@@ -72,7 +72,7 @@ export const OfferNotifications = () => {
     // 3. User just logged in (check session)
     const shouldShow = !lastNotificationTime || 
                        (now - parseInt(lastNotificationTime)) > twoHours ||
-                       sessionStorage.getItem('campusmart_just_logged_in') === 'true';
+                       sessionStorage.getItem('Mimshach_just_logged_in') === 'true';
 
     if (shouldShow && (recentProducts.length > 0 || trendingProducts.length > 0)) {
       // Notification 1: New Listings (based on real products)
@@ -185,10 +185,10 @@ export const OfferNotifications = () => {
       }, 70000); // 1 minute 10 seconds
 
       // Update last notification time
-      localStorage.setItem('campusmart_last_notification', now.toString());
+      localStorage.setItem('Mimshach_last_notification', now.toString());
       
       // Clear the just logged in flag
-      sessionStorage.removeItem('campusmart_just_logged_in');
+      sessionStorage.removeItem('Mimshach_just_logged_in');
     }
   }, [user, recentProducts, trendingProducts, navigate]);
 

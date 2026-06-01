@@ -101,7 +101,7 @@ const OrdersPage = () => {
       console.error('Error loading orders:', error);
       
       // Fallback to localStorage
-      const savedOrders = JSON.parse(localStorage.getItem('campusmart_orders') || '[]');
+      const savedOrders = JSON.parse(localStorage.getItem('Mimshach_orders') || '[]');
       const userOrders = savedOrders.filter((order: Order) => order.customer.email === user.email);
       userOrders.sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setOrders(userOrders);

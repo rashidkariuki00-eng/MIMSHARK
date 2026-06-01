@@ -89,7 +89,7 @@ const AuthPage = () => {
       );
       
       // Set flag to trigger notifications
-      sessionStorage.setItem('campusmart_just_logged_in', 'true');
+      sessionStorage.setItem('Mimshach_just_logged_in', 'true');
       
       toast.success(`Account ${mode === 'signup' ? 'created' : 'signed in'} successfully!`);
       navigate("/profile");
@@ -295,7 +295,7 @@ const AuthPage = () => {
                   className="text-sm text-muted-foreground hover:text-accent transition-colors"
                 >
                   {mode === "signin" 
-                    ? <span>New to CampusMart? <span className="text-green-600 font-semibold">Create account</span></span>
+                    ? <span>New to Mimshach? <span className="text-green-600 font-semibold">Create account</span></span>
                     : "Already have an account? Sign in"
                   }
                 </button>

@@ -1,292 +1,111 @@
--- CampusMart Database Schema
--- Compatible with: PostgreSQL, MySQL, SQLite
--- Created: April 29, 2026
+-- ============================================================
+-- Mimshach Household Collection — D1 (SQLite) Database Schema
+-- Deploy: npx wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql
+-- ============================================================
 
--- ============================================
--- USERS TABLE
--- ============================================
-CREATE TABLE users (
-  id VARCHAR(36) PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  full_name VARCHAR(255) NOT NULL,
-  phone_number VARCHAR(20),
-  profile_image_url VARCHAR(500),
-  bio TEXT,
-  location VARCHAR(255),
-  latitude DECIMAL(10, 8),
-  longitude DECIMAL(11, 8),
-  is_seller BOOLEAN DEFAULT FALSE,
-  seller_rating DECIMAL(3, 2) DEFAULT 0,
-  seller_reviews_count INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  last_login TIMESTAMP,
-  is_active BOOLEAN DEFAULT TRUE,
-  is_admin BOOLEAN DEFAULT FALSE
-);
-
--- ============================================
--- PRODUCTS TABLE
--- ============================================
-CREATE TABLE products (
-  id VARCHAR(36) PRIMARY KEY,
-  seller_id VARCHAR(36) NOT NULL,
-  title VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL,
-  category VARCHAR(100) NOT NULL,
-  price DECIMAL(10, 2) NOT NULL,
-  original_price DECIMAL(10, 2), -- Original price for discount display
-  image_url VARCHAR(500), -- URL path to R2 image
-  images TEXT, -- JSON array of image URL paths
-  quantity_available INT NOT NULL DEFAULT 1,
-  location VARCHAR(255),
-  latitude DECIMAL(10, 8),
-  longitude DECIMAL(11, 8),
-  rating DECIMAL(3, 2) DEFAULT 0,
-  reviews_count INT DEFAULT 0,
-  is_available BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- ============================================
--- PRODUCT REVIEWS TABLE
--- ============================================
-CREATE TABLE product_reviews (
-  id VARCHAR(36) PRIMARY KEY,
-  product_id VARCHAR(36) NOT NULL,
-  buyer_id VARCHAR(36) NOT NULL,
-  rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
-  comment TEXT,
-  is_verified_purchase BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-  FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- ============================================
--- CART TABLE
--- ============================================
-CREATE TABLE cart_items (
-  id VARCHAR(36) PRIMARY KEY,
-  user_id VARCHAR(36) NOT NULL,
-  product_id VARCHAR(36) NOT NULL,
-  quantity INT NOT NULL DEFAULT 1,
-  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-  UNIQUE KEY unique_user_product (user_id, product_id)
-);
-
--- ============================================
--- ORDERS TABLE
--- ============================================
-CREATE TABLE orders (
-  id VARCHAR(36) PRIMARY KEY,
-  buyer_id VARCHAR(36) NOT NULL,
-  seller_id VARCHAR(36) NOT NULL,
-  total_amount DECIMAL(10, 2) NOT NULL,
-  delivery_fee DECIMAL(10, 2) DEFAULT 0,
-  status VARCHAR(50) DEFAULT 'pending', -- pending, processing, shipped, delivered, cancelled
-  payment_method VARCHAR(50), -- mpesa, card, cash
-  delivery_address TEXT NOT NULL,
-  delivery_latitude DECIMAL(10, 8),
-  delivery_longitude DECIMAL(11, 8),
-  buyer_phone VARCHAR(20),
-  seller_phone VARCHAR(20),
-  notes TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  delivered_at TIMESTAMP,
-  FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- ============================================
--- ORDER ITEMS TABLE
--- ============================================
-CREATE TABLE order_items (
-  id VARCHAR(36) PRIMARY KEY,
-  order_id VARCHAR(36) NOT NULL,
-  product_id VARCHAR(36) NOT NULL,
-  quantity INT NOT NULL,
-  price_at_purchase DECIMAL(10, 2) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
-);
-
--- ============================================
--- FAVORITES TABLE
--- ============================================
-CREATE TABLE favorites (
-  id VARCHAR(36) PRIMARY KEY,
-  user_id VARCHAR(36) NOT NULL,
-  product_id VARCHAR(36) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-  UNIQUE KEY unique_user_favorite (user_id, product_id)
-);
-
--- ============================================
--- COUPONS TABLE
--- ============================================
-CREATE TABLE coupons (
-  id VARCHAR(36) PRIMARY KEY,
-  code VARCHAR(50) UNIQUE NOT NULL,
-  type VARCHAR(20) NOT NULL CHECK (type IN ('percentage', 'fixed')),
-  value DECIMAL(10, 2) NOT NULL,
-  description TEXT NOT NULL,
-  min_order_amount DECIMAL(10, 2),
-  max_discount DECIMAL(10, 2),
-  usage_limit INT,
-  used_count INT DEFAULT 0,
-  expires_at TIMESTAMP,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- ============================================
--- NOTIFICATIONS TABLE
--- ============================================
-CREATE TABLE notifications (
-  id VARCHAR(36) PRIMARY KEY,
-  user_id VARCHAR(36) NOT NULL,
-  type VARCHAR(50) NOT NULL, -- order_update, new_message, product_review, etc
-  title VARCHAR(255) NOT NULL,
-  message TEXT NOT NULL,
-  related_id VARCHAR(36), -- order_id, product_id, etc
-  is_read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- ============================================
--- MESSAGES TABLE
--- ============================================
-CREATE TABLE messages (
-  id VARCHAR(36) PRIMARY KEY,
-  sender_id VARCHAR(36) NOT NULL,
-  receiver_id VARCHAR(36) NOT NULL,
-  product_id VARCHAR(36),
-  message TEXT NOT NULL,
-  is_read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
-);
-
--- ============================================
--- USER SETTINGS TABLE
--- ============================================
-CREATE TABLE user_settings (
-  id VARCHAR(36) PRIMARY KEY,
-  user_id VARCHAR(36) UNIQUE NOT NULL,
-  dark_mode BOOLEAN DEFAULT FALSE,
-  notifications_enabled BOOLEAN DEFAULT TRUE,
-  email_notifications BOOLEAN DEFAULT TRUE,
-  push_notifications BOOLEAN DEFAULT TRUE,
-  language VARCHAR(10) DEFAULT 'en', -- en, sw, ki, lo
-  privacy_level VARCHAR(50) DEFAULT 'public', -- public, private, friends_only
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- ============================================
--- SELLER STATS TABLE
--- ============================================
-CREATE TABLE seller_stats (
-  id VARCHAR(36) PRIMARY KEY,
-  seller_id VARCHAR(36) UNIQUE NOT NULL,
-  total_products INT DEFAULT 0,
-  total_sales INT DEFAULT 0,
-  total_revenue DECIMAL(12, 2) DEFAULT 0,
-  average_rating DECIMAL(3, 2) DEFAULT 0,
-  response_time_hours INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- ============================================
--- CATEGORIES TABLE
--- ============================================
-CREATE TABLE categories (
-  id VARCHAR(36) PRIMARY KEY,
-  name VARCHAR(100) NOT NULL UNIQUE,
-  slug VARCHAR(100) NOT NULL UNIQUE,
+-- ============================================================
+-- CATEGORIES
+-- ============================================================
+CREATE TABLE IF NOT EXISTS categories (
+  id          TEXT PRIMARY KEY,
+  name        TEXT NOT NULL,
+  slug        TEXT UNIQUE NOT NULL,
   description TEXT,
-  icon_url VARCHAR(500),
-  display_order INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  image_url   TEXT,
+  sort_order  INTEGER NOT NULL DEFAULT 0,
+  is_active   INTEGER NOT NULL DEFAULT 1,
+  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================
--- INDEXES FOR PERFORMANCE
--- ============================================
+-- ============================================================
+-- PRODUCTS  (admin-managed, no seller accounts)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS products (
+  id              TEXT PRIMARY KEY,
+  title           TEXT NOT NULL,
+  description     TEXT,
+  category        TEXT NOT NULL,
+  price           REAL NOT NULL CHECK(price >= 0),
+  original_price  REAL,
+  image_url       TEXT,
+  images          TEXT,   -- JSON array of additional image URLs stored in R2
+  stock_quantity  INTEGER NOT NULL DEFAULT 0,
+  is_available    INTEGER NOT NULL DEFAULT 1,
+  is_featured     INTEGER NOT NULL DEFAULT 0,
+  rating          REAL    NOT NULL DEFAULT 0 CHECK(rating BETWEEN 0 AND 5),
+  reviews_count   INTEGER NOT NULL DEFAULT 0,
+  created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
--- Users indexes
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_is_seller ON users(is_seller);
-CREATE INDEX idx_users_created_at ON users(created_at);
+-- ============================================================
+-- ORDERS  (anonymous customers — name + phone only, no accounts)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS orders (
+  id               TEXT PRIMARY KEY,
+  order_number     TEXT UNIQUE NOT NULL,
+  customer_name    TEXT NOT NULL,
+  customer_phone   TEXT NOT NULL,
+  delivery_address TEXT NOT NULL,
+  subtotal         REAL NOT NULL CHECK(subtotal >= 0),
+  delivery_fee     REAL NOT NULL DEFAULT 0,
+  total_amount     REAL NOT NULL CHECK(total_amount >= 0),
+  status           TEXT NOT NULL DEFAULT 'pending'
+                     CHECK(status IN ('pending','confirmed','processing','shipped','delivered','cancelled')),
+  notes            TEXT,
+  created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
--- Products indexes
-CREATE INDEX idx_products_seller_id ON products(seller_id);
-CREATE INDEX idx_products_category ON products(category);
-CREATE INDEX idx_products_is_available ON products(is_available);
-CREATE INDEX idx_products_created_at ON products(created_at);
-CREATE INDEX idx_products_location ON products(location);
+-- ============================================================
+-- ORDER ITEMS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS order_items (
+  id                TEXT PRIMARY KEY,
+  order_id          TEXT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id        TEXT NOT NULL,
+  product_title     TEXT NOT NULL,
+  product_image_url TEXT,
+  quantity          INTEGER NOT NULL DEFAULT 1 CHECK(quantity > 0),
+  price_at_purchase REAL NOT NULL CHECK(price_at_purchase >= 0),
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
--- Reviews indexes
-CREATE INDEX idx_reviews_product_id ON product_reviews(product_id);
-CREATE INDEX idx_reviews_buyer_id ON product_reviews(buyer_id);
-CREATE INDEX idx_reviews_created_at ON product_reviews(created_at);
+-- ============================================================
+-- PRODUCT REVIEWS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS product_reviews (
+  id            TEXT PRIMARY KEY,
+  product_id    TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  reviewer_name TEXT NOT NULL DEFAULT 'Anonymous',
+  rating        INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+  review_text   TEXT,
+  created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
--- Orders indexes
-CREATE INDEX idx_orders_buyer_id ON orders(buyer_id);
-CREATE INDEX idx_orders_seller_id ON orders(seller_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_created_at ON orders(created_at);
+-- ============================================================
+-- INDEXES
+-- ============================================================
+CREATE INDEX IF NOT EXISTS idx_products_category   ON products(category);
+CREATE INDEX IF NOT EXISTS idx_products_available  ON products(is_available);
+CREATE INDEX IF NOT EXISTS idx_products_featured   ON products(is_featured);
+CREATE INDEX IF NOT EXISTS idx_products_created    ON products(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_status       ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_number       ON orders(order_number);
+CREATE INDEX IF NOT EXISTS idx_orders_phone        ON orders(customer_phone);
+CREATE INDEX IF NOT EXISTS idx_orders_created      ON orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_order_items_order   ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_product     ON product_reviews(product_id);
 
--- Cart indexes
-CREATE INDEX idx_cart_user_id ON cart_items(user_id);
-CREATE INDEX idx_cart_product_id ON cart_items(product_id);
-
--- Favorites indexes
-CREATE INDEX idx_favorites_user_id ON favorites(user_id);
-CREATE INDEX idx_favorites_product_id ON favorites(product_id);
-
--- Messages indexes
-CREATE INDEX idx_messages_sender_id ON messages(sender_id);
-CREATE INDEX idx_messages_receiver_id ON messages(receiver_id);
-CREATE INDEX idx_messages_created_at ON messages(created_at);
-
--- Notifications indexes
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX idx_notifications_is_read ON notifications(is_read);
-CREATE INDEX idx_notifications_created_at ON notifications(created_at);
-
--- ============================================
--- SAMPLE DATA (Optional)
--- ============================================
-
--- Insert categories
-INSERT INTO categories (id, name, slug, description, display_order) VALUES
-('cat-1', 'Electronics', 'electronics', 'Phones, laptops, and gadgets', 1),
-('cat-2', 'Fashion', 'fashion', 'Clothes, shoes, and accessories', 2),
-('cat-3', 'Books', 'books', 'Textbooks and novels', 3),
-('cat-4', 'Food & Drinks', 'food', 'Snacks and beverages', 4),
-('cat-5', 'Furniture', 'furniture', 'Beds, chairs, and tables', 5),
-('cat-6', 'Stationery', 'stationery', 'Pens, notebooks, and supplies', 6),
-('cat-7', 'Rooms', 'rooms', 'Bedsitters and apartments', 7);
-
--- ============================================
--- END OF SCHEMA
--- ============================================
+-- ============================================================
+-- SEED CATEGORIES
+-- ============================================================
+INSERT OR IGNORE INTO categories (id, name, slug, description, sort_order) VALUES
+  ('cat-home',      'Home Accessories',  'home-accessories', 'Decorative and functional home accessories',   1),
+  ('cat-kitchen',   'Kitchen',           'kitchen',          'Cookware, utensils and kitchen appliances',    2),
+  ('cat-outfits',   'Outfits',           'outfits',          'Elegant outfits and everyday fashion',         3),
+  ('cat-furniture', 'Furniture',         'furniture',        'Stylish furniture for every room',             4),
+  ('cat-bedding',   'Bedding & Curtains','bedding-curtains', 'Bedding sets, pillows and curtains',           5),
+  ('cat-decor',     'Decor',             'decor',            'Wall art, rugs, plants and decorative items',  6),
+  ('cat-elec',      'Electronics',       'electronics',      'Home electronics and smart appliances',        7);

@@ -1,9 +1,9 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { 
-  LayoutDashboard, Users, Package, ShoppingBag, Gift, Sparkles,
-  LogOut, Menu, X, Bell, Search, ChevronDown, Shield,
-  Activity, Settings, BarChart3, Database
+import {
+  LayoutDashboard, Package, ShoppingBag, PlusCircle,
+  LogOut, Menu, X, Shield,
+  Activity, Settings, Database
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { toast } from "sonner";
@@ -30,59 +30,47 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   const menuItems = [
-    { 
-      icon: LayoutDashboard, 
-      label: 'Dashboard', 
+    {
+      icon: LayoutDashboard,
+      label: 'Dashboard',
       path: '/admin',
       description: 'Overview & Analytics'
     },
-    { 
-      icon: Activity, 
-      label: 'Activity Monitor', 
-      path: '/admin/activity',
-      description: 'Live Activity Feed'
+    {
+      icon: PlusCircle,
+      label: 'Post Product',
+      path: '/sell',
+      description: 'Add new item to shop'
     },
-    { 
-      icon: Settings, 
-      label: 'System Control', 
-      path: '/admin/control',
-      description: 'Admin Actions'
-    },
-    { 
-      icon: Database, 
-      label: 'Database Viewer', 
-      path: '/admin/database',
-      description: 'Direct DB Access'
-    },
-    { 
-      icon: Users, 
-      label: 'Users', 
-      path: '/admin/users',
-      description: 'Manage Users'
-    },
-    { 
-      icon: Package, 
-      label: 'Products', 
+    {
+      icon: Package,
+      label: 'Products',
       path: '/admin/products',
-      description: 'Product Listings'
+      description: 'Manage listings'
     },
-    { 
-      icon: ShoppingBag, 
-      label: 'Orders', 
+    {
+      icon: ShoppingBag,
+      label: 'Orders',
       path: '/admin/orders',
-      description: 'Order Management'
+      description: 'Order management'
     },
-    { 
-      icon: Gift, 
-      label: 'Coupons', 
-      path: '/admin/coupons',
-      description: 'Discount Codes'
+    {
+      icon: Activity,
+      label: 'Activity',
+      path: '/admin/activity',
+      description: 'Live activity feed'
     },
-    { 
-      icon: Sparkles, 
-      label: 'Lucky Codes', 
-      path: '/admin/lucky-codes',
-      description: 'Wallet Points'
+    {
+      icon: Database,
+      label: 'Database',
+      path: '/admin/database',
+      description: 'Direct DB access'
+    },
+    {
+      icon: Settings,
+      label: 'System',
+      path: '/admin/control',
+      description: 'System controls'
     },
   ];
 
@@ -118,7 +106,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             </button>
             <div className="flex items-center gap-1 md:gap-2">
               <Logo />
-              <div className="flex items-center gap-1 md:gap-2 ml-1 md:ml-2 px-2 md:px-3 py-1 md:py-1.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full">
+              <div className="flex items-center gap-1 md:gap-2 ml-1 md:ml-2 px-2 md:px-3 py-1 md:py-1.5 bg-gradient-to-r from-[#C9941A] to-[#D4AF37] rounded-full">
                 <Shield className="h-3 w-3 md:h-4 md:w-4 text-white" />
                 <span className="text-xs md:text-xs font-bold text-white">ADMIN</span>
               </div>
@@ -127,13 +115,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
           {/* Right Section - Mobile Optimized */}
           <div className="flex items-center gap-1 md:gap-3">
-            <button className="hidden md:flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <Search className="h-4 w-4 md:h-5 md:w-5 text-gray-600 dark:text-gray-300" />
-            </button>
-            <button className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative">
-              <Bell className="h-4 w-4 md:h-5 md:w-5 text-gray-600 dark:text-gray-300" />
-              <span className="absolute top-1 right-1 md:top-2 md:right-2 w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full"></span>
-            </button>
             <div className="hidden md:flex items-center gap-2 md:gap-3 pl-2 md:pl-3 border-l border-gray-200 dark:border-gray-700">
               <div className="text-right">
                 <p className="text-xs md:text-sm font-semibold text-gray-900 dark:text-white">Admin</p>
@@ -175,7 +156,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 to={item.path}
                 className={`flex items-center gap-2 md:gap-3 px-2 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl transition-all ${
                   active
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-[#C9941A] to-[#D4AF37] text-white shadow-lg'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
                 title={!sidebarOpen ? item.label : undefined}
@@ -228,7 +209,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-3 md:px-4 py-3 md:py-4 rounded-lg md:rounded-xl transition-all ${
                       active
-                        ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-[#C9941A] to-[#D4AF37] text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
                   >

@@ -23,9 +23,9 @@ const ProfilePage = () => {
 
   useEffect(() => {
     // Check if user just logged in
-    const justLoggedIn = sessionStorage.getItem('campusmart_just_logged_in');
+    const justLoggedIn = sessionStorage.getItem('Mimshach_just_logged_in');
     if (justLoggedIn && user) {
-      sessionStorage.removeItem('campusmart_just_logged_in');
+      sessionStorage.removeItem('Mimshach_just_logged_in');
       // Show login celebration
       const timer = setTimeout(() => {
         setShowLoginCelebration(true);
@@ -76,8 +76,8 @@ const ProfilePage = () => {
   };
 
   const handleContactSupport = () => {
-    const adminPhone = "254108254465";
-    const message = `Hello CampusMart Support,\n\nI need help with:\n\n[Please describe your issue or feedback here]\n\n---\nUser: ${user?.name || 'Guest'}\nEmail: ${user?.email || 'N/A'}`;
+    const adminPhone = "254706752174";
+    const message = `Hello Mimshach Support,\n\nI need help with:\n\n[Please describe your issue or feedback here]\n\n---\nUser: ${user?.name || 'Guest'}\nEmail: ${user?.email || 'N/A'}`;
     
     // Detect if mobile device
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -178,7 +178,7 @@ const ProfilePage = () => {
           <div className="text-xs">
             • Redeem lucky codes from promotions<br/>
             • Complete purchases and reviews<br/>
-            • Refer friends to CampusMart
+            • Refer friends to Mimshach
           </div>
         </div>
         <button 

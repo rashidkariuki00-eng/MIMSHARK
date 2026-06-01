@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageShell } from "@/components/PageShell";
 import { useShop } from "@/store/shop";
-import { Bell, Globe, Lock, Moon, Shield, User, Download, Eye, EyeOff } from "lucide-react";
+import { Globe, Lock, Moon, Shield, User, Download, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -14,12 +14,6 @@ const SettingsPage = () => {
   const { user } = useShop();
   const navigate = useNavigate();
   
-  const [notifications, setNotifications] = useState(() => {
-    return localStorage.getItem('notifications_enabled') !== 'false';
-  });
-  const [emailNotifications, setEmailNotifications] = useState(() => {
-    return localStorage.getItem('email_notifications_enabled') !== 'false';
-  });
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('dark_mode') === 'true';
   });
@@ -185,69 +179,6 @@ const SettingsPage = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 This is the phone number linked to your account
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Notification Settings */}
-        <div className="rounded-2xl bg-card p-5 shadow-card">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10">
-              <Bell className="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <h2 className="text-lg font-extrabold">Notifications</h2>
-              <p className="text-xs text-muted-foreground">Manage how you receive updates</p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-medium">Push Notifications</div>
-                <div className="text-xs text-muted-foreground">Get notified about orders and messages</div>
-              </div>
-              <button
-                onClick={() => {
-                  const newValue = !notifications;
-                  setNotifications(newValue);
-                  localStorage.setItem('notifications_enabled', String(newValue));
-                  toast.success(newValue ? "Push notifications enabled" : "Push notifications disabled");
-                }}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notifications ? "bg-accent" : "bg-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notifications ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-medium">Email Notifications</div>
-                <div className="text-xs text-muted-foreground">Receive updates via email</div>
-              </div>
-              <button
-                onClick={() => {
-                  const newValue = !emailNotifications;
-                  setEmailNotifications(newValue);
-                  localStorage.setItem('email_notifications_enabled', String(newValue));
-                  toast.success(newValue ? "Email notifications enabled" : "Email notifications disabled");
-                }}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  emailNotifications ? "bg-accent" : "bg-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    emailNotifications ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
             </div>
           </div>
         </div>
@@ -458,7 +389,7 @@ const SettingsPage = () => {
                 <Download className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-lg font-extrabold">Install CampusMart App</h2>
+                <h2 className="text-lg font-extrabold">Install Mimshach App</h2>
                 <p className="text-xs opacity-90">Get quick access from your home screen</p>
               </div>
             </div>

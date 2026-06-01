@@ -67,7 +67,7 @@ const DEFAULT_LUCKY_CODES: LuckyCode[] = [
 
 class LocalLuckyCodesService {
   private getStorageKey(key: string): string {
-    return `campusmart_${key}`;
+    return `Mimshach_${key}`;
   }
 
   private getLuckyCodes(): LuckyCode[] {

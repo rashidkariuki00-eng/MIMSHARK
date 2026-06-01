@@ -56,7 +56,7 @@ const AdminCoupons = () => {
   };
 
   const loadFromLocalStorage = () => {
-    const savedCoupons = localStorage.getItem('campusmart_coupons');
+    const savedCoupons = localStorage.getItem('Mimshach_coupons');
     if (savedCoupons) {
       setCoupons(JSON.parse(savedCoupons));
     }
@@ -149,7 +149,7 @@ const AdminCoupons = () => {
         : [...coupons, newCoupon];
       
       setCoupons(updatedCoupons);
-      localStorage.setItem('campusmart_coupons', JSON.stringify(updatedCoupons));
+      localStorage.setItem('Mimshach_coupons', JSON.stringify(updatedCoupons));
       toast.success(editingCoupon ? 'Coupon updated successfully' : 'Coupon created successfully');
     }
 
@@ -211,7 +211,7 @@ const AdminCoupons = () => {
         // Fallback to localStorage
         const updatedCoupons = coupons.filter(c => c.id !== id);
         setCoupons(updatedCoupons);
-        localStorage.setItem('campusmart_coupons', JSON.stringify(updatedCoupons));
+        localStorage.setItem('Mimshach_coupons', JSON.stringify(updatedCoupons));
         toast.success('Coupon deleted successfully');
       }
     }
@@ -247,7 +247,7 @@ const AdminCoupons = () => {
         c.id === id ? { ...c, active: !c.active } : c
       );
       setCoupons(updatedCoupons);
-      localStorage.setItem('campusmart_coupons', JSON.stringify(updatedCoupons));
+      localStorage.setItem('Mimshach_coupons', JSON.stringify(updatedCoupons));
       toast.success('Coupon status updated');
     }
   };

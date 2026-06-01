@@ -1,249 +1,177 @@
-// Cloudflare Pages Function for Admin Products API
-// This handles CRUD operations for products in D1 database
-
+// Cloudflare Pages Function — Admin Products API
 interface Env {
   DB: D1Database;
   STORAGE: R2Bucket;
 }
 
-interface Product {
-  id: string;
-  seller_id: string;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  original_price?: number;
-  image_url?: string;
-  images?: string;
-  quantity_available: number;
-  location?: string;
-  latitude?: number;
-  longitude?: number;
-  rating: number;
-  reviews_count: number;
-  is_available: boolean;
-  created_at: string;
-  updated_at: string;
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
-// Enforce admin subdomain access only
-function enforceAdminDomain(request: Request): Response | null {
-  const url = new URL(request.url);
-  if (url.hostname !== "admin.campusmart.co.ke" && url.hostname !== "localhost") {
-    return new Response(JSON.stringify({ 
-      error: "Admin access is only available at admin.campusmart.co.ke" 
-    }), {
-      status: 403,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-  return null;
-}
-
-// Simple admin authentication check - check both cookie and Authorization header
 function isAdmin(request: Request): boolean {
-  // Check cookie first
-  const cookie = request.headers.get("Cookie") || "";
-  if (cookie.includes("admin_session=true")) {
-    return true;
-  }
-  
-  // Check Authorization header as fallback
-  const authHeader = request.headers.get("Authorization");
-  if (authHeader === "Bearer admin_session_true") {
-    return true;
-  }
-  
-  // Check for session storage indicator in custom header
-  const sessionHeader = request.headers.get("X-Admin-Session");
-  if (sessionHeader === "true") {
-    return true;
-  }
-  
-  return false;
+  const cookie  = request.headers.get("Cookie") || "";
+  const session = request.headers.get("X-Admin-Session") || "";
+  const auth    = request.headers.get("Authorization") || "";
+  return cookie.includes("admin_session=true") || session === "true" || auth === "Bearer admin_session_true";
 }
 
+// GET /api/admin/products
 export async function onRequestGet(context: { env: Env; request: Request }) {
-  const { env, request } = context;
-
-  // Check domain restriction
-  const domainCheck = enforceAdminDomain(request);
-  if (domainCheck) return domainCheck;
-
-  // Check admin authentication
-  if (!isAdmin(request)) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+  if (!isAdmin(context.request)) return json({ error: "Unauthorized" }, 401);
 
   try {
-    // Get all products with seller information
-    const result = await env.DB.prepare(`
-      SELECT 
-        p.*,
-        u.full_name as seller_name,
-        u.email as seller_email
-      FROM products p
-      LEFT JOIN users u ON p.seller_id = u.id
-      ORDER BY p.created_at DESC
-    `).all();
-
-    return new Response(JSON.stringify({ 
-      success: true, 
-      products: result.results 
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
+    const { results } = await context.env.DB.prepare(
+      "SELECT * FROM products ORDER BY created_at DESC"
+    ).all();
+    return json({ success: true, products: results });
   } catch (error) {
-    console.error("Error fetching products:", error);
-    return new Response(JSON.stringify({ 
-      error: "Failed to fetch products" 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    console.error("Admin GET products error:", error);
+    return json({ error: "Failed to fetch products" }, 500);
   }
 }
 
-export async function onRequestDelete(context: { env: Env; request: Request }) {
-  const { env, request } = context;
-
-  // Check domain restriction
-  const domainCheck = enforceAdminDomain(request);
-  if (domainCheck) return domainCheck;
-
-  // Check admin authentication
-  if (!isAdmin(request)) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+// POST /api/admin/products — create product
+export async function onRequestPost(context: { env: Env; request: Request }) {
+  if (!isAdmin(context.request)) return json({ error: "Unauthorized" }, 401);
 
   try {
-    const url = new URL(request.url);
+    const data = await context.request.json() as {
+      title: string;
+      description?: string;
+      category: string;
+      price: number;
+      original_price?: number;
+      image_url?: string;
+      images?: string;
+      stock_quantity?: number;
+      is_featured?: boolean;
+    };
+
+    if (!data.title || !data.category || !data.price) {
+      return json({ error: "title, category and price are required" }, 400);
+    }
+
+    const id  = crypto.randomUUID();
+    const now = new Date().toISOString();
+
+    await context.env.DB.prepare(`
+      INSERT INTO products (id, title, description, category, price, original_price, image_url, images, stock_quantity, is_featured, rating, reviews_count, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?)
+    `).bind(
+      id,
+      data.title,
+      data.description || null,
+      data.category,
+      data.price,
+      data.original_price || null,
+      data.image_url || null,
+      data.images || null,
+      data.stock_quantity ?? 1,
+      data.is_featured ? 1 : 0,
+      now,
+      now
+    ).run();
+
+    return json({ success: true, id }, 201);
+  } catch (error: any) {
+    console.error("Admin POST products error:", error);
+    return json({ error: error.message }, 500);
+  }
+}
+
+// PUT /api/admin/products — update product
+export async function onRequestPut(context: { env: Env; request: Request }) {
+  if (!isAdmin(context.request)) return json({ error: "Unauthorized" }, 401);
+
+  try {
+    const body = await context.request.json() as {
+      id: string;
+      title?: string;
+      description?: string;
+      category?: string;
+      price?: number;
+      original_price?: number;
+      stock_quantity?: number;
+      is_available?: boolean;
+      is_featured?: boolean;
+      image_url?: string;
+      images?: string;
+    };
+
+    if (!body.id) return json({ error: "Product ID is required" }, 400);
+
+    const fields: string[] = [];
+    const params: (string | number | null)[] = [];
+
+    if (body.title          !== undefined) { fields.push("title = ?");          params.push(body.title); }
+    if (body.description    !== undefined) { fields.push("description = ?");    params.push(body.description); }
+    if (body.category       !== undefined) { fields.push("category = ?");       params.push(body.category); }
+    if (body.price          !== undefined) { fields.push("price = ?");          params.push(body.price); }
+    if (body.original_price !== undefined) { fields.push("original_price = ?"); params.push(body.original_price); }
+    if (body.stock_quantity !== undefined) { fields.push("stock_quantity = ?"); params.push(body.stock_quantity); }
+    if (body.is_available   !== undefined) { fields.push("is_available = ?");   params.push(body.is_available ? 1 : 0); }
+    if (body.is_featured    !== undefined) { fields.push("is_featured = ?");    params.push(body.is_featured ? 1 : 0); }
+    if (body.image_url      !== undefined) { fields.push("image_url = ?");      params.push(body.image_url); }
+    if (body.images         !== undefined) { fields.push("images = ?");         params.push(body.images); }
+
+    if (fields.length === 0) return json({ error: "No fields to update" }, 400);
+
+    fields.push("updated_at = ?");
+    params.push(new Date().toISOString());
+    params.push(body.id);
+
+    await context.env.DB.prepare(
+      `UPDATE products SET ${fields.join(", ")} WHERE id = ?`
+    ).bind(...params).run();
+
+    return json({ success: true });
+  } catch (error: any) {
+    console.error("Admin PUT products error:", error);
+    return json({ error: error.message }, 500);
+  }
+}
+
+// DELETE /api/admin/products?id=...
+export async function onRequestDelete(context: { env: Env; request: Request }) {
+  if (!isAdmin(context.request)) return json({ error: "Unauthorized" }, 401);
+
+  try {
+    const url       = new URL(context.request.url);
     const productId = url.searchParams.get("id");
+    if (!productId) return json({ error: "Product ID is required" }, 400);
 
-    if (!productId) {
-      return new Response(JSON.stringify({ error: "Product ID is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    // Get product details first (for image cleanup)
-    const product = await env.DB.prepare(
+    const product = await context.env.DB.prepare(
       "SELECT image_url, images FROM products WHERE id = ?"
-    ).bind(productId).first() as Product | null;
+    ).bind(productId).first() as { image_url?: string; images?: string } | null;
 
-    if (!product) {
-      return new Response(JSON.stringify({ error: "Product not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+    if (!product) return json({ error: "Product not found" }, 404);
 
-    // Delete the product from database
-    await env.DB.prepare("DELETE FROM products WHERE id = ?").bind(productId).run();
+    await context.env.DB.prepare("DELETE FROM products WHERE id = ?").bind(productId).run();
 
-    // Clean up images from R2 storage
-    const imagesToDelete: string[] = [];
-    
+    // Clean up R2 images
+    const keys: string[] = [];
     if (product.image_url) {
-      // Extract the key from the URL (assuming format: https://domain/key)
-      const imageKey = product.image_url.split('/').pop();
-      if (imageKey) imagesToDelete.push(imageKey);
+      const k = product.image_url.split("/").pop();
+      if (k) keys.push(k);
     }
-
     if (product.images) {
       try {
-        const imageArray = JSON.parse(product.images);
-        imageArray.forEach((url: string) => {
-          const key = url.split('/').pop();
-          if (key) imagesToDelete.push(key);
+        (JSON.parse(product.images) as string[]).forEach((url) => {
+          const k = url.split("/").pop();
+          if (k) keys.push(k);
         });
-      } catch (e) {
-        console.warn("Failed to parse images JSON:", e);
-      }
+      } catch (_) {}
+    }
+    for (const key of keys) {
+      try { await context.env.STORAGE.delete(key); } catch (_) {}
     }
 
-    // Delete images from R2
-    for (const key of imagesToDelete) {
-      try {
-        await env.STORAGE.delete(key);
-      } catch (e) {
-        console.warn(`Failed to delete image ${key}:`, e);
-      }
-    }
-
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: "Product deleted successfully" 
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
-
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    return new Response(JSON.stringify({ 
-      error: "Failed to delete product" 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-}
-
-export async function onRequestPut(context: { env: Env; request: Request }) {
-  const { env, request } = context;
-
-  // Check domain restriction
-  const domainCheck = enforceAdminDomain(request);
-  if (domainCheck) return domainCheck;
-
-  // Check admin authentication
-  if (!isAdmin(request)) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-
-  try {
-    const body = await request.json();
-    const { id, is_available } = body;
-
-    if (!id || typeof is_available !== 'boolean') {
-      return new Response(JSON.stringify({ 
-        error: "Product ID and is_available status are required" 
-      }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    // Update product availability
-    await env.DB.prepare(
-      "UPDATE products SET is_available = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-    ).bind(is_available, id).run();
-
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: `Product ${is_available ? 'approved' : 'rejected'} successfully` 
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
-
-  } catch (error) {
-    console.error("Error updating product:", error);
-    return new Response(JSON.stringify({ 
-      error: "Failed to update product" 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return json({ success: true });
+  } catch (error: any) {
+    console.error("Admin DELETE products error:", error);
+    return json({ error: error.message }, 500);
   }
 }

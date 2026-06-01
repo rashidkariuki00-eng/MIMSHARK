@@ -1,121 +1,61 @@
-// Cloudflare Pages Function for Admin Orders Management
-
-interface Env {
-  DB: D1Database;
-}
+// Admin Orders API — uses new Mimshach schema
+interface Env { DB: D1Database; }
 
 function isAdmin(request: Request): boolean {
-  // Check cookie first
-  const cookie = request.headers.get("Cookie") || "";
-  if (cookie.includes("admin_session=true")) {
-    return true;
-  }
-  
-  // Check Authorization header as fallback
-  const authHeader = request.headers.get("Authorization");
-  if (authHeader === "Bearer admin_session_true") {
-    return true;
-  }
-  
-  // Check for session storage indicator in custom header
-  const sessionHeader = request.headers.get("X-Admin-Session");
-  if (sessionHeader === "true") {
-    return true;
-  }
-  
-  return false;
+  const cookie  = request.headers.get("Cookie") || "";
+  const session = request.headers.get("X-Admin-Session") || "";
+  const auth    = request.headers.get("Authorization") || "";
+  return cookie.includes("admin_session=true") || session === "true" || auth === "Bearer admin_session_true";
 }
 
-export async function onRequestGet(context: { env: Env; request: Request }) {
-  const { env, request } = context;
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
-  if (!isAdmin(request)) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+// GET /api/admin/orders
+export async function onRequestGet(context: { env: Env; request: Request }) {
+  if (!isAdmin(context.request)) return json({ error: "Unauthorized" }, 401);
 
   try {
-    const result = await env.DB.prepare(`
-      SELECT 
+    const { results } = await context.env.DB.prepare(`
+      SELECT
         o.*,
-        buyer.full_name as buyer_name,
-        buyer.email as buyer_email,
-        seller.full_name as seller_name,
-        seller.email as seller_email,
-        COUNT(oi.id) as item_count
+        COUNT(oi.id) as item_count,
+        GROUP_CONCAT(oi.product_title, ', ') as products_summary
       FROM orders o
-      LEFT JOIN users buyer ON o.buyer_id = buyer.id
-      LEFT JOIN users seller ON o.seller_id = seller.id
       LEFT JOIN order_items oi ON o.id = oi.order_id
       GROUP BY o.id
       ORDER BY o.created_at DESC
     `).all();
 
-    return new Response(JSON.stringify({ 
-      success: true, 
-      orders: result.results 
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    return new Response(JSON.stringify({ 
-      error: "Failed to fetch orders" 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return json({ success: true, orders: results });
+  } catch (error: any) {
+    console.error("Orders GET error:", error);
+    return json({ error: error.message }, 500);
   }
 }
 
+// PUT /api/admin/orders — update order status
 export async function onRequestPut(context: { env: Env; request: Request }) {
-  const { env, request } = context;
-
-  if (!isAdmin(request)) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+  if (!isAdmin(context.request)) return json({ error: "Unauthorized" }, 401);
 
   try {
-    const body = await request.json();
-    const { id, status } = body;
+    const { id, status } = await context.request.json() as { id: string; status: string };
+    if (!id || !status) return json({ error: "id and status are required" }, 400);
 
-    if (!id || !status) {
-      return new Response(JSON.stringify({ 
-        error: "Order ID and status are required" 
-      }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+    const validStatuses = ['pending','confirmed','processing','shipped','delivered','cancelled'];
+    if (!validStatuses.includes(status)) return json({ error: "Invalid status" }, 400);
 
-    const updateData: any = { status, updated_at: new Date().toISOString() };
-    if (status === 'delivered') {
-      updateData.delivered_at = new Date().toISOString();
-    }
+    await context.env.DB.prepare(
+      "UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    ).bind(status, id).run();
 
-    await env.DB.prepare(
-      "UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP, delivered_at = ? WHERE id = ?"
-    ).bind(status, status === 'delivered' ? new Date().toISOString() : null, id).run();
-
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: `Order status updated to ${status}` 
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
-
-  } catch (error) {
-    console.error("Error updating order:", error);
-    return new Response(JSON.stringify({ 
-      error: "Failed to update order" 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return json({ success: true, message: `Order updated to ${status}` });
+  } catch (error: any) {
+    console.error("Orders PUT error:", error);
+    return json({ error: error.message }, 500);
   }
 }

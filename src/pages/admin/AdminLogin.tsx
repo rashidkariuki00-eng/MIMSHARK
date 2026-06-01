@@ -16,11 +16,11 @@ const AdminLogin = () => {
   useEffect(() => {
     const hostname = window.location.hostname;
     // Only redirect from main production domain, not from development or mobile environments
-    const isMainProductionDomain = hostname === "campusmart.co.ke" || hostname === "www.campusmart.co.ke";
+    const isMainProductionDomain = hostname === "Mimshach.co.ke" || hostname === "www.Mimshach.co.ke";
     
     if (isMainProductionDomain) {
       setIsRedirecting(true);
-      window.location.href = `https://admin.campusmart.co.ke/admin/login`;
+      window.location.href = `https://admin.Mimshach.co.ke/admin/login`;
     }
   }, []);
 
@@ -36,7 +36,7 @@ const AdminLogin = () => {
     
     try {
       // Check against the unique admin password
-      const ADMIN_PASSWORD = "LUCYISOKORE@2026";
+      const ADMIN_PASSWORD = "@Florence.2026";
       
       if (password !== ADMIN_PASSWORD) {
         setError("Invalid password");
@@ -61,9 +61,9 @@ const AdminLogin = () => {
 
   if (isRedirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-red-800 to-red-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-[#1a1400] to-black">
         <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-md text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
           <p className="text-gray-700">Redirecting to admin portal...</p>
         </div>
       </div>
@@ -71,7 +71,7 @@ const AdminLogin = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-900 via-red-800 to-red-900">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-black via-[#1a1400] to-black">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
         <div className="text-center mb-8">
@@ -92,7 +92,7 @@ const AdminLogin = () => {
             {/* Password Field */}
             <div className="space-y-3">
               <label className="text-lg font-semibold text-gray-800 flex items-center gap-3">
-                <Lock className="h-5 w-5 text-red-600" />
+                <Lock className="h-5 w-5 text-[#D4AF37]" />
                 Admin Password
               </label>
               <div className="relative">
@@ -108,7 +108,7 @@ const AdminLogin = () => {
                   className={`w-full rounded-2xl border-2 px-6 py-4 pr-14 text-lg transition-all focus:ring-4 focus:ring-red-500/20 outline-none ${
                     error 
                       ? "border-red-500 bg-red-50 focus:border-red-600" 
-                      : "border-gray-300 bg-white hover:border-red-400 focus:border-red-500"
+                      : "border-gray-300 bg-white hover:border-[#D4AF37] focus:border-[#D4AF37]"
                   }`}
                 />
                 <button
@@ -120,7 +120,7 @@ const AdminLogin = () => {
                 </button>
               </div>
               {error && (
-                <div className="flex items-center gap-2 text-red-600 text-sm font-medium">
+                <div className="flex items-center gap-2 text-[#D4AF37] text-sm font-medium">
                   <div className="w-1 h-1 bg-red-600 rounded-full"></div>
                   {error}
                 </div>
@@ -131,7 +131,7 @@ const AdminLogin = () => {
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full mt-8 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 py-4 text-lg font-bold text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full mt-8 rounded-2xl bg-gradient-to-r from-[#C9941A] to-[#D4AF37] py-4 text-lg font-bold text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-3">
@@ -149,7 +149,7 @@ const AdminLogin = () => {
             {/* Security Info */}
             <div className="flex items-center justify-center gap-2 pt-6 border-t border-gray-200">
               <Shield className="h-4 w-4 text-gray-500" />
-              <p className="text-xs text-gray-500 font-medium">Secure Admin Portal • CampusMart Kenya</p>
+              <p className="text-xs text-gray-500 font-medium">Secure Admin Portal • Mimshach</p>
             </div>
           </div>
         </form>
@@ -160,7 +160,7 @@ const AdminLogin = () => {
             onClick={() => navigate("/")}
             className="text-sm text-white/80 hover:text-white transition-colors font-medium"
           >
-            ← Back to CampusMart
+            ← Back to Mimshach
           </button>
         </div>
       </div>

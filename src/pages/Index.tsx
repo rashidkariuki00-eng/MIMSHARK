@@ -1,26 +1,17 @@
-import { ArrowRight, Flame, Sparkles, Truck, Shield, Wallet, Zap } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Flame, Sparkles, Truck, Shield, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { TopBar } from "@/components/TopBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ProductCard } from "@/components/ProductCard";
 import { FlashCountdown } from "@/components/FlashCountdown";
-import { SignInModal } from "@/components/SignInModal";
-import { LuckyCodeModal } from "@/components/LuckyCodeModal";
-import { CelebrationModal } from "@/components/CelebrationModal";
-import { notificationService } from "@/services/notificationService";
-import { useShop } from "@/store/shop";
 import { categories, getProducts, getProductsSync, transformDatabaseProduct } from "@/data/products";
 const Index = () => {
-  const navigate = useNavigate();
-  const { user } = useShop();
   const [products, setProducts] = useState<ProductWithCategory[]>(getProductsSync() || []);
-  const [showSignInModal, setShowSignInModal] = useState(false);
-  const [showLuckyCodeModal, setShowLuckyCodeModal] = useState(false);
-  const [showLoginCelebration, setShowLoginCelebration] = useState(false);
-  
   const [trending, setTrending] = useState<ProductWithCategory[]>([]);
   const [justListed, setJustListed] = useState<ProductWithCategory[]>([]);
+  const [loadingTrending, setLoadingTrending] = useState(true);
+  const [loadingJustListed, setLoadingJustListed] = useState(true);
 
   // Fetch trending and just listed products
   useEffect(() => {
@@ -34,6 +25,7 @@ const Index = () => {
           const trendingData = await trendingResponse.json();
           setTrending(Array.isArray(trendingData) ? trendingData.map(transformDatabaseProduct) : []);
         }
+        setLoadingTrending(false);
 
         // Fetch just listed products
         const newestResponse = await fetch('/api/products?sort=newest&limit=8', {
@@ -43,8 +35,11 @@ const Index = () => {
           const newestData = await newestResponse.json();
           setJustListed(Array.isArray(newestData) ? newestData.map(transformDatabaseProduct) : []);
         }
+        setLoadingJustListed(false);
       } catch (error) {
         console.error('Error fetching sorted products:', error);
+        setLoadingTrending(false);
+        setLoadingJustListed(false);
       }
     };
 
@@ -81,69 +76,19 @@ const Index = () => {
     };
   }, []);
 
-  // Show sign-in modal on first visit if not logged in
-  useEffect(() => {
-    if (!user) {
-      const hasSeenModal = sessionStorage.getItem('hasSeenSignInModal');
-      if (!hasSeenModal) {
-        // Show modal after a short delay
-        const timer = setTimeout(() => {
-          setShowSignInModal(true);
-          sessionStorage.setItem('hasSeenSignInModal', 'true');
-        }, 2000); // 2 seconds delay
-        return () => clearTimeout(timer);
-      }
-    } else {
-      // Check if user just logged in
-      const justLoggedIn = sessionStorage.getItem('campusmart_just_logged_in');
-      if (justLoggedIn) {
-        sessionStorage.removeItem('campusmart_just_logged_in');
-        // Show login celebration
-        const timer = setTimeout(() => {
-          setShowLoginCelebration(true);
-          // Also show welcome notification
-          const firstName = user.name?.split(' ')[0] || 'friend';
-          notificationService.showWelcomeNotification(firstName);
-        }, 500); // Small delay to let page load
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [user]);
-
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Sign In Modal */}
-      <SignInModal 
-        isOpen={showSignInModal} 
-        onClose={() => setShowSignInModal(false)}
-        message="Welcome to CampusMart! Sign in to start shopping and selling."
-      />
-
-      {/* Lucky Code Modal */}
-      <LuckyCodeModal 
-        isOpen={showLuckyCodeModal} 
-        onClose={() => setShowLuckyCodeModal(false)}
-      />
-
-      {/* Login Celebration Modal */}
-      <CelebrationModal
-        isOpen={showLoginCelebration}
-        onClose={() => setShowLoginCelebration(false)}
-        type="login"
-        title="Welcome Back!"
-        message={`Great to see you again, ${user?.name?.split(' ')[0] || 'friend'}! 🎉`}
-      />
 
       <div className="sticky top-0 z-30">
         <TopBar />
         {/* Promo strip */}
-        <div className="bg-destructive">
+        <div className="bg-primary">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 text-xs text-primary-foreground">
             <FlashCountdown />
             <div className="hidden items-center gap-4 sm:flex">
-              <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Free campus delivery</span>
-              <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5" /> Buyer protection</span>
-              <span className="flex items-center gap-1.5"><Wallet className="h-3.5 w-3.5" /> M-PESA</span>
+              <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Free delivery</span>
+              <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5" /> Quality guaranteed</span>
+              <span className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5" /> Premium collection</span>
             </div>
           </div>
         </div>
@@ -151,45 +96,15 @@ const Index = () => {
 
       <main className="mx-auto max-w-7xl px-4 pb-4">
         <div className="py-3">
-          <Section icon={<Flame className="h-5 w-5 text-accent" />} title="Trending Near You" subtitle="Popular with students this week" link="View All" linkTo="/search?sort=trending">
-            <ProductGrid items={trending} />
+          <Section icon={<Flame className="h-5 w-5 text-accent" />} title="Trending Now" subtitle="Most popular items this week" link="View All" linkTo="/search?sort=trending">
+            <ProductGrid items={trending} loading={loadingTrending} />
           </Section>
         </div>
 
-        <Section icon={<Sparkles className="h-5 w-5 text-accent" />} title="Just Listed" subtitle="Fresh from your fellow students" link="See More" linkTo="/search?sort=newest">
-          <ProductGrid items={justListed} />
+        <Section icon={<Sparkles className="h-5 w-5 text-accent" />} title="New Arrivals" subtitle="Fresh additions to the collection" link="See More" linkTo="/search?sort=newest">
+          <ProductGrid items={justListed} loading={loadingJustListed} />
         </Section>
 
-        {/* Post Item CTA Card - Shows at bottom with red color */}
-        <div className="mt-8 mb-4">
-          <div 
-            onClick={() => {
-              if (!user) {
-                setShowSignInModal(true);
-              } else {
-                navigate('/sell');
-              }
-            }}
-            className="relative overflow-hidden rounded-xl bg-red-600 p-3 shadow-card hover:shadow-elevated transition-all cursor-pointer group"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex-1">
-                <h3 className="text-sm font-extrabold text-primary-foreground mb-0.5">
-                  Got something to sell?
-                </h3>
-                <p className="text-xs text-primary-foreground/90">
-                  List your item in seconds
-                </p>
-              </div>
-              <button className="shrink-0 rounded-full bg-white text-red-600 px-4 py-2 text-xs font-bold hover:scale-105 transition-transform shadow-lg">
-                Post Now
-              </button>
-            </div>
-            {/* Decorative elements */}
-            <div className="absolute -right-3 -top-3 h-16 w-16 rounded-full bg-white/10 blur-xl"></div>
-            <div className="absolute -left-3 -bottom-3 h-16 w-16 rounded-full bg-white/10 blur-xl"></div>
-          </div>
-        </div>
 
         {/* Category Sections - All Products by Category */}
         <CategorySections />
@@ -218,14 +133,43 @@ const Section = ({ icon, title, subtitle, link, linkTo, children }: { icon: Reac
   </section>
 );
 
-const ProductGrid = ({ items }: { items: any[] }) => (
+const ProductGrid = ({ items, loading = false }: { items: any[]; loading?: boolean }) => (
   <div className="-mx-4 overflow-x-auto scrollbar-hide px-4">
     <div className="flex gap-1">
-      {items.map((p) => (
-        <div key={p.id} className="w-[calc((100vw-2rem-0.25rem)/2.5)] shrink-0 md:w-[140px]">
-          <ProductCard p={p} />
-        </div>
-      ))}
+      {loading
+        ? [1,2,3,4].map(i => <SkeletonCard key={i} />)
+        : items.length > 0
+          ? items.map((p) => (
+              <div key={p.id} className="w-[calc((100vw-2rem-0.25rem)/2.5)] shrink-0 md:w-[140px]">
+                <ProductCard p={p} />
+              </div>
+            ))
+          : null
+      }
+    </div>
+  </div>
+);
+
+const SkeletonCard = () => (
+  <div className="w-[calc((100vw-2rem-0.25rem)/2.5)] shrink-0 md:w-[140px] rounded-xl bg-card overflow-hidden animate-pulse">
+    <div className="bg-muted h-32 w-full" />
+    <div className="p-2 space-y-1.5">
+      <div className="bg-muted rounded h-3 w-3/4" />
+      <div className="bg-muted rounded h-3 w-1/2" />
+    </div>
+  </div>
+);
+
+const SkeletonRow = () => (
+  <div className="mt-6">
+    <div className="flex items-center justify-between mb-3">
+      <div className="bg-muted rounded h-5 w-32 animate-pulse" />
+      <div className="bg-muted rounded h-4 w-16 animate-pulse" />
+    </div>
+    <div className="-mx-4 overflow-x-hidden px-4">
+      <div className="flex gap-1">
+        {[1,2,3,4].map(i => <SkeletonCard key={i} />)}
+      </div>
     </div>
   </div>
 );
@@ -233,45 +177,49 @@ const ProductGrid = ({ items }: { items: any[] }) => (
 // Category Sections Component - Shows products by category
 const CategorySections = () => {
   const [categoryProducts, setCategoryProducts] = useState<Record<string, any[]>>({});
-  const [loading, setLoading] = useState(true);
+  const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
     const fetchCategoryProducts = async () => {
-      setLoading(true);
       const productsByCategory: Record<string, any[]> = {};
-
       try {
-        // Fetch products for each category
-        for (const category of categories) {
-          const response = await fetch(`/api/products?category=${category.slug}&limit=10`, {
-            headers: { 'Cache-Control': 'no-cache' },
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            productsByCategory[category.slug] = Array.isArray(data) 
-              ? data.map(transformDatabaseProduct) 
-              : [];
-          } else {
-            productsByCategory[category.slug] = [];
-          }
-        }
-
+        await Promise.all(
+          categories.map(async (category) => {
+            try {
+              const response = await fetch(`/api/products?category=${category.slug}&limit=10`);
+              if (response.ok) {
+                const data = await response.json();
+                productsByCategory[category.slug] = Array.isArray(data) ? data.map(transformDatabaseProduct) : [];
+              } else {
+                productsByCategory[category.slug] = [];
+              }
+            } catch {
+              productsByCategory[category.slug] = [];
+            }
+          })
+        );
         setCategoryProducts(productsByCategory);
       } catch (error) {
         console.error('Error fetching category products:', error);
       } finally {
-        setLoading(false);
+        setFetched(true);
       }
     };
-
     fetchCategoryProducts();
   }, []);
 
-  if (loading) {
+  if (!fetched) {
+    return <>{categories.slice(0, 3).map(c => <SkeletonRow key={c.slug} />)}</>;
+  }
+
+  const hasAnyProducts = categories.some(c => (categoryProducts[c.slug] || []).length > 0);
+
+  if (!hasAnyProducts) {
     return (
-      <div className="mt-8 text-center">
-        <p className="text-sm text-muted-foreground">Loading categories...</p>
+      <div className="mt-10 rounded-2xl border border-border bg-card p-10 text-center">
+        <Zap className="mx-auto h-10 w-10 text-accent opacity-40 mb-3" />
+        <p className="text-base font-semibold text-foreground">Products coming soon</p>
+        <p className="text-xs text-muted-foreground mt-1">The admin is adding items to the collection.</p>
       </div>
     );
   }
@@ -280,17 +228,14 @@ const CategorySections = () => {
     <>
       {categories.map((category) => {
         const products = categoryProducts[category.slug] || [];
-        
-        // Only show category if it has products
         if (products.length === 0) return null;
-
         return (
-          <Section 
+          <Section
             key={category.slug}
-            icon={<Zap className="h-5 w-5 text-accent" />} 
-            title={category.name} 
-            subtitle={`Browse ${category.name.toLowerCase()}`}
-            link="View All" 
+            icon={<Zap className="h-5 w-5 text-accent" />}
+            title={category.name}
+            subtitle={`Browse our ${category.name.toLowerCase()} collection`}
+            link="View All"
             linkTo={`/category/${category.slug}`}
           >
             <ProductGrid items={products} />

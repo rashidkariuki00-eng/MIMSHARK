@@ -58,7 +58,7 @@ export const CouponRedemption = ({
         coupon = data.coupon;
       } else {
         // Fallback to localStorage
-        const savedCoupons = localStorage.getItem('campusmart_coupons');
+        const savedCoupons = localStorage.getItem('Mimshach_coupons');
         if (savedCoupons) {
           const coupons: Coupon[] = JSON.parse(savedCoupons);
           coupon = coupons.find(c => 

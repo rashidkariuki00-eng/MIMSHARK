@@ -24,7 +24,7 @@ export const productsAPI = {
     } catch (error) {
       console.error('API Error:', error);
       // Fallback to localStorage for now
-      return JSON.parse(localStorage.getItem('campusmart_products') || '[]');
+      return JSON.parse(localStorage.getItem('Mimshach_products') || '[]');
     }
   },
 
@@ -53,9 +53,9 @@ export const productsAPI = {
     } catch (error) {
       console.error('API Error:', error);
       // Fallback to localStorage
-      const existing = JSON.parse(localStorage.getItem('campusmart_products') || '[]');
+      const existing = JSON.parse(localStorage.getItem('Mimshach_products') || '[]');
       existing.unshift(product);
-      localStorage.setItem('campusmart_products', JSON.stringify(existing));
+      localStorage.setItem('Mimshach_products', JSON.stringify(existing));
       return product;
     }
   },
@@ -120,9 +120,9 @@ export const ordersAPI = {
     } catch (error) {
       console.error('API Error:', error);
       // Fallback to localStorage
-      const existing = JSON.parse(localStorage.getItem('campusmart_orders') || '[]');
+      const existing = JSON.parse(localStorage.getItem('Mimshach_orders') || '[]');
       existing.unshift(order);
-      localStorage.setItem('campusmart_orders', JSON.stringify(existing));
+      localStorage.setItem('Mimshach_orders', JSON.stringify(existing));
       return order;
     }
   },
@@ -134,7 +134,7 @@ export const ordersAPI = {
       return response.json();
     } catch (error) {
       console.error('API Error:', error);
-      return JSON.parse(localStorage.getItem('campusmart_orders') || '[]');
+      return JSON.parse(localStorage.getItem('Mimshach_orders') || '[]');
     }
   },
 

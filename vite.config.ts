@@ -27,4 +27,17 @@ export default defineConfig(({ mode }) => ({
       "@tanstack/query-core",
     ],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-ui": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select", "@radix-ui/react-tabs", "@radix-ui/react-toast", "lucide-react", "sonner"],
+          "vendor-query": ["@tanstack/react-query"],
+          "vendor-misc": ["clsx", "tailwind-merge", "class-variance-authority", "date-fns", "zod"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 }));

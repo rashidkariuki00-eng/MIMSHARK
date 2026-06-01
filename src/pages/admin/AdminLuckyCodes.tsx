@@ -51,7 +51,7 @@ const AdminLuckyCodes = () => {
   };
 
   const loadFromLocalStorage = () => {
-    const savedCodes = localStorage.getItem('campusmart_lucky_codes');
+    const savedCodes = localStorage.getItem('Mimshach_lucky_codes');
     if (savedCodes) {
       setLuckyCodes(JSON.parse(savedCodes));
     }
@@ -137,7 +137,7 @@ const AdminLuckyCodes = () => {
         : [...luckyCodes, newCode];
       
       setLuckyCodes(updatedCodes);
-      localStorage.setItem('campusmart_lucky_codes', JSON.stringify(updatedCodes));
+      localStorage.setItem('Mimshach_lucky_codes', JSON.stringify(updatedCodes));
       toast.success(editingCode ? 'Lucky code updated successfully' : 'Lucky code created successfully');
     }
 
@@ -193,7 +193,7 @@ const AdminLuckyCodes = () => {
         // Fallback to localStorage
         const updatedCodes = luckyCodes.filter(c => c.id !== id);
         setLuckyCodes(updatedCodes);
-        localStorage.setItem('campusmart_lucky_codes', JSON.stringify(updatedCodes));
+        localStorage.setItem('Mimshach_lucky_codes', JSON.stringify(updatedCodes));
         toast.success('Lucky code deleted successfully');
       }
     }
@@ -229,7 +229,7 @@ const AdminLuckyCodes = () => {
         c.id === id ? { ...c, active: !c.active } : c
       );
       setLuckyCodes(updatedCodes);
-      localStorage.setItem('campusmart_lucky_codes', JSON.stringify(updatedCodes));
+      localStorage.setItem('Mimshach_lucky_codes', JSON.stringify(updatedCodes));
       toast.success('Lucky code status updated');
     }
   };

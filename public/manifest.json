@@ -1,14 +1,14 @@
 {
-  "name": "CampusMart Kenya",
-  "short_name": "CampusMart",
-  "description": "Student marketplace for buying and selling on Kenyan university campuses",
-  "version": "3.1.0",
-  "version_name": "Mobile Lucky Codes Update",
+  "name": "Mimshach Household Collection",
+  "short_name": "Mimshach",
+  "description": "Online shop for home accessories, outfits, kitchen essentials, furniture and décor. Where Glamour & Quality meets Affordability.",
+  "version": "1.0.0",
+  "version_name": "Home & Lifestyle Collection",
   "start_url": "/?v=3.1-mobile-lucky-codes",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#ffffff",
-  "theme_color": "#7CB342",
+  "theme_color": "#D4AF37",
   "orientation": "portrait-primary",
   "scope": "/",
   "prefer_related_applications": false,
@@ -79,27 +79,27 @@
       "form_factor": "wide"
     }
   ],
-  "categories": ["shopping", "education", "lifestyle"],
+  "categories": ["shopping", "lifestyle", "home"],
   "shortcuts": [
     {
-      "name": "Browse Products",
-      "short_name": "Browse",
-      "description": "Browse all products",
+      "name": "Shop Now",
+      "short_name": "Shop",
+      "description": "Browse all home accessories and outfits",
       "url": "/search",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "My Cart",
-      "short_name": "Cart",
-      "description": "View shopping cart",
-      "url": "/cart",
+      "name": "Kitchen",
+      "short_name": "Kitchen",
+      "description": "Shop kitchen essentials",
+      "url": "/category/kitchen",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "My Orders",
-      "short_name": "Orders",
-      "description": "Track your orders",
-      "url": "/orders",
+      "name": "Outfits",
+      "short_name": "Outfits",
+      "description": "Shop outfits and fashion",
+      "url": "/category/outfits",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     }
   ]
