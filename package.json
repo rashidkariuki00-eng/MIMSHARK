@@ -15,11 +15,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "pages:dev": "npx wrangler pages dev dist --compatibility-flag=nodejs_compat",
-    "deploy": "npx wrangler pages deploy dist --project-name=mimshach",
-    "pages:deploy": "npm run build && npx wrangler pages deploy dist --project-name=mimshach",
-    "db:migrate": "npx wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --remote",
-    "db:migrate:local": "npx wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --local"
+    "deploy": "wrangler pages deploy",
+    "dev:cf": "wrangler pages dev dist",
+    "db:migrate": "wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --remote",
+    "db:migrate:local": "wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --local"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.6",
