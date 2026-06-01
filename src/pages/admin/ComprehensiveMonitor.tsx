@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Package, ShoppingBag, TrendingUp, Clock, RefreshCw, CheckCircle, Truck, XCircle } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { adminFetch } from "@/utils/adminAuth";
 
 interface DashboardData {
@@ -61,8 +60,7 @@ const ComprehensiveMonitor = () => {
   }, []);
 
   return (
-    <AdminLayout>
-      <div className="space-y-4 md:space-y-6">
+    <div className="space-y-4 md:space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -159,8 +157,7 @@ const ComprehensiveMonitor = () => {
             )}
           </div>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

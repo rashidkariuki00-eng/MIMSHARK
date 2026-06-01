@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, CheckCircle, XCircle, Eye, Trash2 } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { adminGet, adminPut, adminDelete } from "@/utils/adminApi";
 
 interface Product {
@@ -125,37 +124,32 @@ const AdminProducts = () => {
 
   if (loading) {
     return (
-      <AdminLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-lg text-muted-foreground">Loading products...</div>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg text-muted-foreground">Loading products...</div>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <AdminLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="text-red-800">Error: {error}</div>
-            <button 
-              onClick={fetchProducts}
-              className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Retry
-            </button>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div className="text-red-800">Error: {error}</div>
+          <button
+            onClick={fetchProducts}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Retry
+          </button>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 md:mb-2">Product Management</h1>
@@ -288,8 +282,7 @@ const AdminProducts = () => {
             <p className="text-sm md:text-base text-muted-foreground">No products found matching your criteria</p>
           </div>
         )}
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

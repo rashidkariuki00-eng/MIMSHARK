@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Users, ShoppingBag, DollarSign, TrendingUp, 
+import {
+  Users, ShoppingBag, DollarSign, TrendingUp,
   Package, AlertCircle, Activity, BarChart3, RefreshCw, Database, Wifi, WifiOff, ExternalLink
 } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 
 const TempDashboard = () => {
   const [apiStatus, setApiStatus] = useState<'testing' | 'working' | 'failed'>('testing');
@@ -60,8 +59,7 @@ const TempDashboard = () => {
   }, []);
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4">
@@ -244,8 +242,7 @@ const TempDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

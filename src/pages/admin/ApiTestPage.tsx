@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
 
 const ApiTestPage = () => {
   const [results, setResults] = useState<any>({});
@@ -39,8 +38,7 @@ const ApiTestPage = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6">
         <h1 className="text-2xl font-bold mb-6">🔧 Admin API Test</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -94,8 +92,7 @@ const ApiTestPage = () => {
             Click the buttons above to test the admin APIs
           </div>
         )}
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

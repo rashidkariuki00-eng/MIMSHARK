@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
 
 const DirectApiTest = () => {
   const [apiResults, setApiResults] = useState<any>({});
@@ -67,8 +66,7 @@ const DirectApiTest = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6 text-center">🔧 Direct API Testing Tool</h1>
         <p className="text-center text-gray-600 mb-8">
           Test the admin APIs directly to see if they're working and returning real data
@@ -176,8 +174,7 @@ const DirectApiTest = () => {
             <li><strong>📊 Data Check:</strong> Look for "totalUsers", "totalProducts", etc. in the response</li>
           </ul>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

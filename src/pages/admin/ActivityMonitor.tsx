@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { 
+import {
   Activity, Users, ShoppingBag, Package, MessageSquare, Star,
   TrendingUp, TrendingDown, Clock, MapPin, AlertTriangle,
   RefreshCw, Filter, Calendar, Eye, BarChart3
 } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { adminFetch } from "@/utils/adminAuth";
 
 interface ActivityStats {
@@ -125,20 +124,17 @@ const ActivityMonitor = () => {
 
   if (loading && activities.length === 0) {
     return (
-      <AdminLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mr-3" />
-            <span className="text-lg">Loading activity monitor...</span>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mr-3" />
+          <span className="text-lg">Loading activity monitor...</span>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4">
@@ -379,8 +375,7 @@ const ActivityMonitor = () => {
             </div>
           </div>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Eye, EyeOff, Percent, Gift, Calendar, Users, Copy, X } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { toast } from "sonner";
 import { adminFetch } from "@/utils/adminAuth";
 
@@ -258,13 +257,12 @@ const AdminCoupons = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1">
-              Coupon Management
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+            Coupon Management
             </h1>
             <p className="text-sm lg:text-base text-gray-600 dark:text-gray-400">
               Create and manage discount coupons for customers
@@ -608,8 +606,7 @@ const AdminCoupons = () => {
             </div>
           )}
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

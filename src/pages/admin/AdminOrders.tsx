@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, Package, Truck, CheckCircle, Clock, Edit } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { adminGet, adminPut } from "@/utils/adminApi";
 
 interface Order {
@@ -109,37 +108,32 @@ const AdminOrders = () => {
 
   if (loading) {
     return (
-      <AdminLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-lg text-muted-foreground">Loading orders...</div>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg text-muted-foreground">Loading orders...</div>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <AdminLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="text-red-800">Error: {error}</div>
-            <button 
-              onClick={fetchOrders}
-              className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Retry
-            </button>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div className="text-red-800">Error: {error}</div>
+          <button
+            onClick={fetchOrders}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Retry
+          </button>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 md:mb-2">Order Management</h1>
@@ -343,8 +337,7 @@ const AdminOrders = () => {
             )}
           </div>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

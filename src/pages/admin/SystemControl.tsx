@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { 
+import {
   Shield, Users, Package, ShoppingBag, MessageSquare, Star,
   Ban, CheckCircle, Trash2, Eye, EyeOff, Send, AlertTriangle,
   Settings, Database, Server, Activity, RefreshCw
 } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 
 interface SystemStatus {
   database: {
@@ -262,20 +261,17 @@ const SystemControl = () => {
 
   if (loading) {
     return (
-      <AdminLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mr-3" />
-            <span className="text-lg">Loading system control...</span>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mr-3" />
+          <span className="text-lg">Loading system control...</span>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4">
@@ -434,8 +430,7 @@ const SystemControl = () => {
             </div>
           </div>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

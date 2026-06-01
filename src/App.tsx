@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AdminLayout from "./components/admin/AdminLayout";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -67,17 +68,19 @@ const App = () => {
 
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminRoute><ComprehensiveMonitor /></AdminRoute>} />
-              <Route path="/admin/activity" element={<AdminRoute><ActivityMonitor /></AdminRoute>} />
-              <Route path="/admin/control" element={<AdminRoute><SystemControl /></AdminRoute>} />
-              <Route path="/admin/database" element={<AdminRoute><DatabaseViewer /></AdminRoute>} />
-              <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
-              <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
-              <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
-              <Route path="/admin/lucky-codes" element={<AdminRoute><AdminLuckyCodes /></AdminRoute>} />
-              <Route path="/admin/test" element={<AdminRoute><DirectApiTest /></AdminRoute>} />
-              <Route path="/admin/debug" element={<AdminRoute><AuthDebug /></AdminRoute>} />
-              <Route path="/admin/diagnostic" element={<AdminRoute><TempDashboard /></AdminRoute>} />
+              <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                <Route path="/admin" element={<ComprehensiveMonitor />} />
+                <Route path="/admin/activity" element={<ActivityMonitor />} />
+                <Route path="/admin/control" element={<SystemControl />} />
+                <Route path="/admin/database" element={<DatabaseViewer />} />
+                <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="/admin/products" element={<AdminProducts />} />
+                <Route path="/admin/orders" element={<AdminOrders />} />
+                <Route path="/admin/lucky-codes" element={<AdminLuckyCodes />} />
+                <Route path="/admin/test" element={<DirectApiTest />} />
+                <Route path="/admin/debug" element={<AuthDebug />} />
+                <Route path="/admin/diagnostic" element={<TempDashboard />} />
+              </Route>
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

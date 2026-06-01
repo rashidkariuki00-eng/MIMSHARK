@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Package, ShoppingBag, PlusCircle,
   LogOut, Menu, X, Shield,
@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { clearAdminSession } from "@/utils/adminAuth";
 
 interface AdminLayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
@@ -249,7 +249,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         }`}
       >
         <div className="p-1 sm:p-2 md:p-3 lg:p-4 xl:p-6">
-          {children}
+          {children ?? <Outlet />}
         </div>
       </main>
     </div>

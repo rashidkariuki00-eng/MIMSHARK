@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Eye, EyeOff, Gift, Calendar, Users, Copy, X, Sparkles, Database } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { toast } from "sonner";
 import { adminFetch } from "@/utils/adminAuth";
 
@@ -264,8 +263,7 @@ const AdminLuckyCodes = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -588,8 +586,7 @@ const AdminLuckyCodes = () => {
             </div>
           )}
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

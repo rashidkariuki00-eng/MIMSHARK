@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { 
+import {
   Database, Table, Search, Download, Trash2, Eye,
   RefreshCw, AlertTriangle, CheckCircle, FileText
 } from "lucide-react";
-import AdminLayout from "@/components/admin/AdminLayout";
 import { adminFetch } from "@/utils/adminAuth";
 
 interface TableInfo {
@@ -124,8 +123,7 @@ const DatabaseViewer = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4">
@@ -265,8 +263,7 @@ const DatabaseViewer = () => {
             )}
           </div>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

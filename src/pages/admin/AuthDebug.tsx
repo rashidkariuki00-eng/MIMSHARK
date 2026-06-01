@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
 
 const AuthDebug = () => {
   const [debugInfo, setDebugInfo] = useState<any>({});
@@ -46,8 +45,7 @@ const AuthDebug = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">🔍 Authentication Debug</h1>
         
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -90,8 +88,7 @@ const AuthDebug = () => {
             Set Session Storage
           </button>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 
