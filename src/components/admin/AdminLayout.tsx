@@ -1,10 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard, Package, ShoppingBag, PlusCircle,
-  LogOut, Menu, X, Shield,
-  Activity, Settings, Database
-} from "lucide-react";
+import { Package, PlusCircle, LogOut, Menu, X, Shield } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { toast } from "sonner";
 import { clearAdminSession } from "@/utils/adminAuth";
@@ -31,46 +27,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const menuItems = [
     {
-      icon: LayoutDashboard,
-      label: 'Dashboard',
-      path: '/admin',
-      description: 'Overview & Analytics'
-    },
-    {
       icon: PlusCircle,
       label: 'Post Product',
       path: '/sell',
-      description: 'Add new item to shop'
+      description: 'Add new item to shop',
     },
     {
       icon: Package,
-      label: 'Products',
+      label: 'Manage Products',
       path: '/admin/products',
-      description: 'Manage listings'
-    },
-    {
-      icon: ShoppingBag,
-      label: 'Orders',
-      path: '/admin/orders',
-      description: 'Order management'
-    },
-    {
-      icon: Activity,
-      label: 'Activity',
-      path: '/admin/activity',
-      description: 'Live activity feed'
-    },
-    {
-      icon: Database,
-      label: 'Database',
-      path: '/admin/database',
-      description: 'Direct DB access'
-    },
-    {
-      icon: Settings,
-      label: 'System',
-      path: '/admin/control',
-      description: 'System controls'
+      description: 'View, edit & delete listings',
     },
   ];
 

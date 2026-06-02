@@ -49,7 +49,7 @@ const AdminLogin = () => {
       setAdminSession();
       
       toast.success('Welcome, Admin!');
-      navigate("/admin");
+      navigate("/admin/products");
       
     } catch (error) {
       toast.error('Authentication failed. Please try again.');
