@@ -82,71 +82,68 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Mobile-First Top Navigation Bar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <div className="min-h-screen bg-[#0a0800]">
+      {/* Top Navigation Bar — black & gold */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0d0b00] border-b border-[#D4AF37]/20 shadow-lg shadow-black/40">
         <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-3">
-          {/* Left Section - Mobile Optimized */}
+          {/* Left */}
           <div className="flex items-center gap-2 md:gap-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="hidden lg:flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="hidden lg:flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg hover:bg-[#D4AF37]/10 transition-colors"
             >
-              <Menu className="h-4 w-4 md:h-5 md:w-5 text-gray-600 dark:text-gray-300" />
+              <Menu className="h-4 w-4 md:h-5 md:w-5 text-[#D4AF37]" />
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#D4AF37]/10 transition-colors"
             >
-              {mobileMenuOpen ? (
-                <X className="h-4 w-4 text-gray-600 dark:text-gray-300" />
-              ) : (
-                <Menu className="h-4 w-4 text-gray-600 dark:text-gray-300" />
-              )}
+              {mobileMenuOpen
+                ? <X className="h-4 w-4 text-[#D4AF37]" />
+                : <Menu className="h-4 w-4 text-[#D4AF37]" />}
             </button>
-            <div className="flex items-center gap-1 md:gap-2">
+            <div className="flex items-center gap-2">
               <Logo />
-              <div className="flex items-center gap-1 md:gap-2 ml-1 md:ml-2 px-2 md:px-3 py-1 md:py-1.5 bg-gradient-to-r from-[#C9941A] to-[#D4AF37] rounded-full">
-                <Shield className="h-3 w-3 md:h-4 md:w-4 text-white" />
-                <span className="text-xs md:text-xs font-bold text-white">ADMIN</span>
+              <div className="flex items-center gap-1 ml-1 px-2 md:px-3 py-1 bg-gradient-to-r from-[#C9941A] to-[#D4AF37] rounded-full">
+                <Shield className="h-3 w-3 md:h-4 md:w-4 text-black" />
+                <span className="text-xs font-bold text-black">ADMIN</span>
               </div>
             </div>
           </div>
 
-          {/* Right Section - Mobile Optimized */}
+          {/* Right */}
           <div className="flex items-center gap-1 md:gap-3">
-            <div className="hidden md:flex items-center gap-2 md:gap-3 pl-2 md:pl-3 border-l border-gray-200 dark:border-gray-700">
+            <div className="hidden md:flex items-center gap-3 pl-3 border-l border-[#D4AF37]/20">
               <div className="text-right">
-                <p className="text-xs md:text-sm font-semibold text-gray-900 dark:text-white">Admin</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{adminEmail}</p>
+                <p className="text-xs md:text-sm font-semibold text-[#D4AF37]">Admin</p>
+                <p className="text-xs text-[#D4AF37]/50">{adminEmail}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group"
+                className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg hover:bg-red-900/30 transition-colors group"
                 title="Logout"
               >
-                <LogOut className="h-4 w-4 md:h-5 md:w-5 text-gray-600 dark:text-gray-300 group-hover:text-red-600 dark:group-hover:text-red-400" />
+                <LogOut className="h-4 w-4 md:h-5 md:w-5 text-[#D4AF37]/60 group-hover:text-red-400" />
               </button>
             </div>
-            {/* Mobile Logout Button */}
             <button
               onClick={handleLogout}
-              className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group"
+              className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-red-900/30 transition-colors group"
               title="Logout"
             >
-              <LogOut className="h-4 w-4 text-gray-600 dark:text-gray-300 group-hover:text-red-600 dark:group-hover:text-red-400" />
+              <LogOut className="h-4 w-4 text-[#D4AF37]/60 group-hover:text-red-400" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Sidebar - Desktop */}
+      {/* Sidebar — Desktop */}
       <aside
-        className={`hidden lg:block fixed left-0 top-12 md:top-16 bottom-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 ${
+        className={`hidden lg:block fixed left-0 top-12 md:top-16 bottom-0 bg-[#0d0b00] border-r border-[#D4AF37]/20 transition-all duration-300 z-40 ${
           sidebarOpen ? 'w-64' : 'w-16 md:w-20'
         }`}
       >
-        <nav className="p-2 md:p-4 space-y-1 md:space-y-2">
+        <nav className="p-2 md:p-4 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -154,20 +151,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 md:gap-3 px-2 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl transition-all ${
+                className={`flex items-center gap-2 md:gap-3 px-2 md:px-4 py-2 md:py-3 rounded-xl transition-all ${
                   active
-                    ? 'bg-gradient-to-r from-[#C9941A] to-[#D4AF37] text-white shadow-lg'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-gradient-to-r from-[#C9941A] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/20'
+                    : 'text-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]'
                 }`}
                 title={!sidebarOpen ? item.label : undefined}
               >
-                <Icon className={`h-4 w-4 md:h-5 md:w-5 flex-shrink-0 ${active ? 'text-white' : ''}`} />
+                <Icon className={`h-4 w-4 md:h-5 md:w-5 flex-shrink-0 ${active ? 'text-black' : ''}`} />
                 {sidebarOpen && (
                   <div className="flex-1 min-w-0">
-                    <p className={`text-xs md:text-sm font-semibold truncate ${active ? 'text-white' : ''}`}>
+                    <p className={`text-xs md:text-sm font-semibold truncate ${active ? 'text-black' : ''}`}>
                       {item.label}
                     </p>
-                    <p className={`text-xs truncate ${active ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <p className={`text-xs truncate ${active ? 'text-black/70' : 'text-[#D4AF37]/40'}`}>
                       {item.description}
                     </p>
                   </div>
@@ -177,12 +174,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           })}
         </nav>
 
-        {/* Sidebar Footer */}
         {sidebarOpen && (
-          <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4 border-t border-[#D4AF37]/20">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-2 md:gap-3 px-2 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              className="w-full flex items-center gap-2 md:gap-3 px-2 md:px-4 py-2 md:py-3 rounded-xl text-red-400/70 hover:bg-red-900/20 hover:text-red-400 transition-colors"
             >
               <LogOut className="h-4 w-4 md:h-5 md:w-5" />
               <span className="text-xs md:text-sm font-semibold">Logout</span>
@@ -191,14 +187,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         )}
       </aside>
 
-      {/* Mobile Menu - Fully Responsive */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setMobileMenuOpen(false)}>
+        <div className="lg:hidden fixed inset-0 z-40 bg-black/70" onClick={() => setMobileMenuOpen(false)}>
           <aside
-            className="fixed left-0 top-12 md:top-16 bottom-0 w-72 sm:w-80 bg-white dark:bg-gray-800 shadow-xl overflow-y-auto"
+            className="fixed left-0 top-12 md:top-16 bottom-0 w-72 sm:w-80 bg-[#0d0b00] border-r border-[#D4AF37]/20 shadow-2xl overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <nav className="p-3 md:p-4 space-y-1 md:space-y-2">
+            <nav className="p-3 md:p-4 space-y-1">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.path);
@@ -207,16 +203,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 md:px-4 py-3 md:py-4 rounded-lg md:rounded-xl transition-all ${
+                    className={`flex items-center gap-3 px-3 md:px-4 py-3 md:py-4 rounded-xl transition-all ${
                       active
-                        ? 'bg-gradient-to-r from-[#C9941A] to-[#D4AF37] text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        ? 'bg-gradient-to-r from-[#C9941A] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/20'
+                        : 'text-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]'
                     }`}
                   >
-                    <Icon className="h-5 w-5 md:h-6 md:w-6" />
+                    <Icon className={`h-5 w-5 ${active ? 'text-black' : ''}`} />
                     <div className="flex-1">
-                      <p className="text-sm md:text-base font-semibold">{item.label}</p>
-                      <p className={`text-xs md:text-sm ${active ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}>
+                      <p className={`text-sm font-semibold ${active ? 'text-black' : ''}`}>{item.label}</p>
+                      <p className={`text-xs ${active ? 'text-black/70' : 'text-[#D4AF37]/40'}`}>
                         {item.description}
                       </p>
                     </div>
@@ -225,17 +221,17 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               })}
             </nav>
 
-            <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-              <div className="mb-3 px-3 md:px-4">
-                <p className="text-sm md:text-base font-semibold text-gray-900 dark:text-white">Admin</p>
-                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{adminEmail}</p>
+            <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 border-t border-[#D4AF37]/20 bg-[#0d0b00]">
+              <div className="mb-3 px-3">
+                <p className="text-sm font-semibold text-[#D4AF37]">Admin</p>
+                <p className="text-xs text-[#D4AF37]/50">{adminEmail}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3 md:px-4 py-3 md:py-4 rounded-lg md:rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-red-400/70 hover:bg-red-900/20 hover:text-red-400 transition-colors"
               >
-                <LogOut className="h-5 w-5 md:h-6 md:w-6" />
-                <span className="text-sm md:text-base font-semibold">Logout</span>
+                <LogOut className="h-5 w-5" />
+                <span className="text-sm font-semibold">Logout</span>
               </button>
             </div>
           </aside>
