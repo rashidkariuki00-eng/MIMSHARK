@@ -8,7 +8,7 @@ import { setAdminSession } from "@/utils/adminAuth";
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -87,34 +87,34 @@ const AdminLogin = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={submit} className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+        <form onSubmit={submit} className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
           <div className="space-y-6">
             {/* Password Field */}
             <div className="space-y-3">
-              <label className="text-lg font-semibold text-gray-800 flex items-center gap-3">
-                <Lock className="h-5 w-5 text-[#D4AF37]" />
+              <label className="text-sm font-medium text-gray-400 flex items-center gap-3">
+                <Lock className="h-4 w-4 text-[#D4AF37]/70" />
                 Admin Password
               </label>
               <div className="relative">
-                <input 
-                  required 
+                <input
+                  required
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                     if (error) setError("");
                   }}
-                  type={showPassword ? "text" : "password"} 
-                  placeholder="Enter the unique admin password" 
-                  className={`w-full rounded-2xl border-2 px-6 py-4 pr-14 text-lg transition-all focus:ring-4 focus:ring-red-500/20 outline-none ${
-                    error 
-                      ? "border-red-500 bg-red-50 focus:border-red-600" 
-                      : "border-gray-300 bg-white hover:border-[#D4AF37] focus:border-[#D4AF37]"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter the unique admin password"
+                  className={`w-full rounded-2xl border px-6 py-4 pr-14 text-base transition-all focus:ring-2 focus:ring-[#D4AF37]/30 outline-none ${
+                    error
+                      ? "border-red-300 bg-red-50/50 focus:border-red-400"
+                      : "border-gray-200 bg-white/60 hover:border-[#D4AF37]/50 focus:border-[#D4AF37]/60"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors p-2"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors p-2"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
