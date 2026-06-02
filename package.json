@@ -15,10 +15,22 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "deploy": "wrangler pages deploy",
-    "dev:cf": "wrangler pages dev dist",
+
+    "deploy": "wrangler pages deploy dist --project-name=mimshach",
+    "deploy:full": "npm run build && wrangler pages deploy dist --project-name=mimshach",
+
+    "pages:dev": "wrangler pages dev dist",
+
+    "db:create": "wrangler d1 create mimshach-db",
     "db:migrate": "wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --remote",
-    "db:migrate:local": "wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --local"
+    "db:migrate:local": "wrangler d1 execute mimshach-db --file=DATABASE_SCHEMA.sql --local",
+    "db:query": "wrangler d1 execute mimshach-db --command",
+
+    "r2:create": "wrangler r2 bucket create mimshach-images",
+    "r2:list": "wrangler r2 object list mimshach-images",
+
+    "cf:whoami": "wrangler whoami",
+    "cf:tail": "wrangler pages deployment tail --project-name=mimshach"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.6",
