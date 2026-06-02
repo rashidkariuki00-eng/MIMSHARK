@@ -1,7 +1,6 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Shield } from "lucide-react";
-import { Logo } from "@/components/Logo";
 import { toast } from "sonner";
 import { setAdminSession } from "@/utils/adminAuth";
 
@@ -11,154 +10,124 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const hostname = window.location.hostname;
-    // Only redirect from main production domain, not from development or mobile environments
     const isMainProductionDomain = hostname === "Mimshach.co.ke" || hostname === "www.Mimshach.co.ke";
-    
     if (isMainProductionDomain) {
-      setIsRedirecting(true);
       window.location.href = `https://admin.Mimshach.co.ke/admin/login`;
     }
   }, []);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!password.trim()) {
-      setError("Password is required");
-      return;
-    }
-    
+    if (!password.trim()) { setError("Password is required"); return; }
     setIsLoading(true);
     setError("");
-    
     try {
-      // Check against the unique admin password
-      const ADMIN_PASSWORD = "@Florence.2026";
-      
-      if (password !== ADMIN_PASSWORD) {
+      const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+      if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
         setError("Invalid password");
-        toast.error('Invalid password');
+        toast.error("Invalid password");
         setIsLoading(false);
         return;
       }
-      
-      // Success - store session and cookie for API authentication
       setAdminSession();
-      
-      toast.success('Welcome, Admin!');
+      toast.success("Welcome, Admin!");
       navigate("/admin/products");
-      
-    } catch (error) {
-      toast.error('Authentication failed. Please try again.');
-      console.error('Login error:', error);
+    } catch {
+      toast.error("Authentication failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (isRedirecting) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-[#1a1400] to-black">
-        <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-md text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
-          <p className="text-gray-700">Redirecting to admin portal...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-black via-[#1a1400] to-black">
-      <div className="w-full max-w-md">
-        {/* Logo and Header */}
+      <div className="w-full max-w-sm">
+
+        {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-full p-4">
-              <Shield className="h-16 w-16 text-white" />
+          <div className="flex justify-center mb-4">
+            <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-full p-5">
+              <Shield className="h-12 w-12 text-[#D4AF37]" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Access</h1>
-          <p className="text-white/80 text-sm">
-            Enter the unique admin password to continue
-          </p>
+          <h1 className="text-3xl font-bold text-[#D4AF37] mb-1">Mimshach Admin</h1>
+          <p className="text-[#D4AF37]/50 text-sm">Enter your password to continue</p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={submit} className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
-          <div className="space-y-6">
-            {/* Password Field */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium text-gray-400 flex items-center gap-3">
-                <Lock className="h-4 w-4 text-[#D4AF37]/70" />
-                Admin Password
-              </label>
-              <div className="relative">
-                <input
-                  required
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (error) setError("");
-                  }}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter the unique admin password"
-                  className={`w-full rounded-2xl border px-6 py-4 pr-14 text-base transition-all focus:ring-2 focus:ring-[#D4AF37]/30 outline-none ${
-                    error
-                      ? "border-red-300 bg-red-50/50 focus:border-red-400"
-                      : "border-gray-200 bg-white/60 hover:border-[#D4AF37]/50 focus:border-[#D4AF37]/60"
+        {/* Form — dark card, no white */}
+        <form
+          onSubmit={submit}
+          className="bg-[#0d0b00]/80 backdrop-blur-md rounded-2xl p-7 border border-[#D4AF37]/20 shadow-2xl shadow-black/60"
+        >
+          <div className="space-y-5">
+
+            {/* Label */}
+            <label className="flex items-center gap-2 text-xs font-semibold text-[#D4AF37]/60 uppercase tracking-widest">
+              <Lock className="h-3.5 w-3.5" />
+              Admin Password
+            </label>
+
+            {/* Input */}
+            <div className="relative">
+              <input
+                required
+                autoFocus
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); if (error) setError(""); }}
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••••"
+                className={`w-full rounded-xl px-4 py-3.5 pr-12 text-[#D4AF37] placeholder-[#D4AF37]/20 bg-black/50 border outline-none transition-all text-base
+                  ${error
+                    ? "border-red-500/60 focus:border-red-400"
+                    : "border-[#D4AF37]/25 hover:border-[#D4AF37]/50 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
                   }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors p-2"
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-              {error && (
-                <div className="flex items-center gap-2 text-[#D4AF37] text-sm font-medium">
-                  <div className="w-1 h-1 bg-red-600 rounded-full"></div>
-                  {error}
-                </div>
-              )}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#D4AF37]/40 hover:text-[#D4AF37] transition-colors p-1"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
 
-            {/* Submit Button */}
-            <button 
+            {/* Error */}
+            {error && (
+              <p className="text-red-400 text-xs flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-red-400 inline-block" />
+                {error}
+              </p>
+            )}
+
+            {/* Submit */}
+            <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-8 rounded-2xl bg-gradient-to-r from-[#C9941A] to-[#D4AF37] py-4 text-lg font-bold text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full rounded-xl bg-gradient-to-r from-[#C9941A] to-[#D4AF37] py-3.5 font-bold text-black text-sm tracking-wide shadow-lg hover:opacity-90 hover:scale-[1.01] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (
-                <div className="flex items-center justify-center gap-3">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Authenticating...
-                </div>
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  Authenticating…
+                </span>
               ) : (
-                <div className="flex items-center justify-center gap-3">
-                  <Shield className="h-5 w-5" />
-                  Access Admin Dashboard
-                </div>
+                <span className="flex items-center justify-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Access Dashboard
+                </span>
               )}
             </button>
-
-            {/* Security Info */}
-            <div className="flex items-center justify-center gap-2 pt-6 border-t border-gray-200">
-              <Shield className="h-4 w-4 text-gray-500" />
-              <p className="text-xs text-gray-500 font-medium">Secure Admin Portal • Mimshach</p>
-            </div>
           </div>
         </form>
 
-        {/* Back to Site */}
-        <div className="text-center mt-8">
-          <button 
+        {/* Back link */}
+        <div className="text-center mt-6">
+          <button
             onClick={() => navigate("/")}
-            className="text-sm text-white/80 hover:text-white transition-colors font-medium"
+            className="text-xs text-[#D4AF37]/40 hover:text-[#D4AF37]/80 transition-colors"
           >
             ← Back to Mimshach
           </button>

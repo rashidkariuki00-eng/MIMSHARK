@@ -151,9 +151,9 @@ const AdminProducts = () => {
   return (
     <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 md:mb-2">Product Management</h1>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">Review and moderate product listings</p>
+        <div className="mb-4">
+          <h1 className="text-xl font-bold text-[#D4AF37] mb-0.5">Product Management</h1>
+          <p className="text-xs text-[#D4AF37]/40">Review and moderate product listings</p>
         </div>
 
         {/* Filters */}
@@ -204,72 +204,56 @@ const AdminProducts = () => {
           </div>
         </div>
 
-        {/* Products Grid - Mobile Responsive */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        {/* Products Grid — always 3 columns */}
+        <div className="grid grid-cols-3 gap-3">
           {filteredProducts.map((product) => (
-            <div key={product.id} className="bg-card rounded-xl md:rounded-2xl shadow-lg border border-border/50 overflow-hidden hover:shadow-xl transition-all">
-              <div className="h-36 sm:h-40 md:h-48 bg-secondary flex items-center justify-center">
+            <div key={product.id} className="bg-[#0d0b00] border border-[#D4AF37]/15 rounded-xl overflow-hidden hover:border-[#D4AF37]/40 transition-all">
+              {/* Image */}
+              <div className="h-24 bg-black/40 flex items-center justify-center">
                 {product.image_url ? (
                   <img src={product.image_url} alt={product.title} className="h-full w-full object-cover" />
                 ) : (
-                  <div className="text-4xl md:text-6xl text-muted-foreground">📦</div>
+                  <span className="text-2xl">📦</span>
                 )}
               </div>
-              <div className="p-3 md:p-5">
-                <div className="flex items-start justify-between mb-2 md:mb-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-foreground mb-1 text-sm md:text-base line-clamp-2">{product.title}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground truncate capitalize">{product.category}</p>
+
+              {/* Info */}
+              <div className="p-2.5 space-y-2">
+                <div className="flex items-start justify-between gap-1">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-[#D4AF37] line-clamp-2 leading-tight">{product.title}</p>
+                    <p className="text-[10px] text-[#D4AF37]/40 capitalize mt-0.5">{product.category}</p>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ml-2 ${getStatusColor(product.is_available)}`}>
+                  <span className={`shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold ${getStatusColor(product.is_available)}`}>
                     {getStatusText(product.is_available)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between mb-3 md:mb-4">
-                  <div>
-                    <span className="text-base md:text-lg font-bold text-accent">KES {product.price.toLocaleString()}</span>
-                    {product.original_price && product.original_price > product.price && (
-                      <span className="text-xs md:text-sm text-muted-foreground line-through ml-1 md:ml-2">
-                        KES {product.original_price.toLocaleString()}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded">{product.category}</span>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#D4AF37]">KES {product.price.toLocaleString()}</span>
+                  <span className="text-[10px] text-[#D4AF37]/40">Qty: {product.stock_quantity}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs text-muted-foreground mb-3 md:mb-4">
-                  <span>{new Date(product.created_at).toLocaleDateString()}</span>
-                  <span className="flex items-center gap-1">
-                    <Eye className="h-3 w-3" />
-                    Qty: {product.stock_quantity}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <button 
+
+                {/* Actions */}
+                <div className="flex gap-1.5 pt-1">
+                  <button
                     onClick={() => handleToggleAvailability(product.id, product.is_available)}
-                    className={`flex-1 flex items-center justify-center gap-1 md:gap-2 px-2 md:px-4 py-2 rounded-lg md:rounded-xl text-xs md:text-sm transition-colors ${
-                      product.is_available 
-                        ? 'bg-red-500 hover:bg-red-600 text-white' 
-                        : 'bg-green-500 hover:bg-green-600 text-white'
+                    className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-semibold transition-colors ${
+                      product.is_available
+                        ? 'bg-red-500/80 hover:bg-red-500 text-white'
+                        : 'bg-green-600/80 hover:bg-green-600 text-white'
                     }`}
                   >
-                    {product.is_available ? (
-                      <>
-                        <XCircle className="h-3 w-3 md:h-4 md:w-4" />
-                        <span className="hidden sm:inline">Reject</span>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="h-3 w-3 md:h-4 md:w-4" />
-                        <span className="hidden sm:inline">Approve</span>
-                      </>
-                    )}
+                    {product.is_available
+                      ? <><XCircle className="h-3 w-3" /><span>Reject</span></>
+                      : <><CheckCircle className="h-3 w-3" /><span>Approve</span></>}
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDeleteProduct(product.id)}
-                    className="px-2 md:px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg md:rounded-xl transition-colors"
-                    title="Delete Product"
+                    className="px-2 py-1.5 bg-red-600/70 hover:bg-red-600 text-white rounded-lg transition-colors"
+                    title="Delete"
                   >
-                    <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
+                    <Trash2 className="h-3 w-3" />
                   </button>
                 </div>
               </div>
@@ -278,8 +262,8 @@ const AdminProducts = () => {
         </div>
 
         {filteredProducts.length === 0 && (
-          <div className="bg-card rounded-xl md:rounded-2xl p-8 md:p-12 text-center shadow-lg border border-border/50">
-            <p className="text-sm md:text-base text-muted-foreground">No products found matching your criteria</p>
+          <div className="rounded-xl p-10 text-center border border-[#D4AF37]/10">
+            <p className="text-sm text-[#D4AF37]/40">No products found</p>
           </div>
         )}
     </div>
