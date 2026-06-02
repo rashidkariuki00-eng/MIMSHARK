@@ -19,14 +19,20 @@ const AdminLogin = () => {
     }
   }, []);
 
+  const hashPassword = async (pw: string): Promise<string> => {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  };
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!password.trim()) { setError("Password is required"); return; }
     setIsLoading(true);
     setError("");
     try {
-      const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
-      if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
+      const entered = await hashPassword(password);
+      const expected = import.meta.env.VITE_ADMIN_HASH || "10a5e010e810d49b2e629361a95a7ed4d50ab2ff67edbd31431ff198abd99002";
+      if (entered !== expected) {
         setError("Invalid password");
         toast.error("Invalid password");
         setIsLoading(false);
